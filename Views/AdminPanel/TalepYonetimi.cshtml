@@ -1,0 +1,457 @@
+﻿<link rel="stylesheet" href="/css/talepyonetimi.css" />
+
+
+@{
+    ViewData["Title"] = "Talep Yönetimi";
+    Layout = "~/Views/Shared/_AdminPanelLayout.cshtml";
+    var tumTalepler = ViewBag.TumTalepler as List<PersonelTakip.Models.GorevTalebi>;
+    var onayBekleyen = ViewBag.OnayBekleyenTalepler as List<PersonelTakip.Models.GorevTalebi>;
+    var onaylanan = ViewBag.OnaylananTalepler as List<PersonelTakip.Models.GorevTalebi>;
+    var reddedilen = ViewBag.ReddedilenTalepler as List<PersonelTakip.Models.GorevTalebi>;
+}
+
+
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sol Panel: Açtığım Talepler -->
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card p-3 shadow-sm equal-height-card">
+                <h4 class=" mb-3">Açtığım Talepler</h4>
+                <div class="d-flex justify-content-end mb-2">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#yeniTalepModal">
+                        <i class="bi bi-plus-circle me-1"></i> + Yeni Talep
+                    </button>
+                </div>
+
+                <ul class="nav nav-tabs mb-3" id="talepTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tum" role="tab">Tümü</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#onayBekliyor" role="tab">Onay Bekliyor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#onaylandi" role="tab">Onaylandı</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#reddedildi" role="tab">Reddedildi</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="talepTabContent">
+                    <div class="tab-pane fade show active" id="tum" role="tabpanel">
+                        <div id="tumTaleplerContainer">
+                            @await Html.PartialAsync("_TumGorevTalepleri", tumTalepler)
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="onayBekliyor" role="tabpanel">
+                        <div id="onayBekleyenTaleplerContainer">
+                            <p class="text-muted">Veriler yükleniyor...</p>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="onaylandi" role="tabpanel">
+                        <div id="onaylananTaleplerContainer">
+                            <p class="text-muted">Veriler yükleniyor...</p>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="reddedildi" role="tabpanel">
+                        <div id="reddedilenTaleplerContainer">
+                            <p class="text-muted">Veriler yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Panel: Gelen Talepler -->
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card p-3 shadow-sm equal-height-card">
+                <h4 class=" mb-3">Gelen Talepler</h4>
+                <div id="gelenTaleplerContainer">
+                    @await Html.PartialAsync("_GelenTalepler", ViewBag.GelenTalepler as List<PersonelTakip.Models.GorevTalebi>)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Step Modal: Görev Talebi Detayları + Atama -->
+<div class="modal fade" id="detayModal" tabindex="-1" aria-labelledby="detayModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Step 1: Talep Detayları -->
+            <div class="step step-1" id="modalStep1">
+                <div id="modalDetayIcerik">
+                    <p>Yükleniyor...</p>
+                </div>
+            </div>
+
+            <!-- Step 2: Görev Atama -->
+            <div class="step step-2" id="modalStep2" style="display: none;">
+                <div id="modalAtamaIcerik"></div>
+            </div>
+
+           
+
+        </div>
+    </div>
+</div>
+<!--Yeni talep ekleme modalı-->
+<div class="modal fade" id="yeniTalepModal" tabindex="-1" aria-labelledby="yeniTalepModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="yeniTalepModalLabel">Yeni Görev Talebi</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body p-4">
+                @await Html.PartialAsync("_YeniGorevTalebiPartial", new GorevTalebi())
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script>
+        // Açtığım talepler için sayfalama
+        $(document).on("click", ".btn-tum-talep-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+
+            $.ajax({
+                url: '/AdminPanel/GetTumTalepler?page=' + page,
+                type: 'GET',
+                success: function (result) {
+                    $("#tumTaleplerContainer").html(result);
+                },
+                error: function () {
+                    alert("Açtığım talepler yüklenirken hata oluştu.");
+                }
+            });
+        });
+        // Onay Bekleyen sayfalama
+        $(document).on("click", ".btn-onaybekleyen-talep-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+            $.get('/AdminPanel/GetOnayBekleyenTalepler?page=' + page, function (html) {
+                $("#onayBekliyor").html(html);
+            });
+        });
+
+        // Onaylanan sayfalama
+        $(document).on("click", ".btn-onaylanan-talep-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+            $.get('/AdminPanel/GetOnaylananTalepler?page=' + page, function (html) {
+                $("#onaylandi").html(html);
+            });
+        });
+
+        // Reddedilen sayfalama
+        $(document).on("click", ".btn-reddedilen-talep-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+            $.get('/AdminPanel/GetReddedilenTalepler?page=' + page, function (html) {
+                $("#reddedildi").html(html);
+            });
+        });
+
+        $(document).ready(function () {
+            // Onay Bekleyen Taleplerin ilk sayfasını yükle
+            $.get('/AdminPanel/GetOnayBekleyenTalepler?page=1', function (html) {
+                $("#onayBekliyor").html(html);
+            });
+
+            // Onaylanan Taleplerin ilk sayfasını yükle
+            $.get('/AdminPanel/GetOnaylananTalepler?page=1', function (html) {
+                $("#onaylandi").html(html);
+            });
+
+            // Reddedilen Taleplerin ilk sayfasını yükle
+            $.get('/AdminPanel/GetReddedilenTalepler?page=1', function (html) {
+                $("#reddedildi").html(html);
+            });
+        });
+
+
+    </script>
+
+    <script>
+        // Detay butonuna tıklanınca modal ve step 1 (detay) yüklenir
+        $(document).on("click", ".btn-detay", function () {
+            const talepId = $(this).data("talep-id");
+
+            // Step geçiş hazırlığı
+            $("#modalStep1").addClass("show");
+            $("#modalStep2").removeClass("show");
+            $("#step1Buttons").show();
+            $("#step2Buttons").hide();
+
+            $("#modalDetayIcerik").html("<p>Yükleniyor...</p>");
+
+            $.ajax({
+                url: '/AdminPanel/GetTalepDetay?id=' + talepId,
+                type: 'GET',
+                success: function (result) {
+                    $("#modalDetayIcerik").html(result);
+                    $("#detayModal").modal("show");
+                },
+                error: function () {
+                    $("#modalDetayIcerik").html("<p class='text-danger'>Detaylar yüklenemedi.</p>");
+                }
+            });
+        });
+
+        // Görev Ata (Step 1 → Step 2)
+        $(document).on("click", "#btnGorevAta", function () {
+            const talepId = $(this).data("talep-id");
+            const mevcutDurum = $(this).data("durum"); // Razor'dan gelen bilgi
+
+            if (mevcutDurum === "Onaylandı") {
+                formuYukle(talepId);
+            } else {
+                $.ajax({
+                    url: '/AdminPanel/GuncelleTalepDurumuOnaylandi',
+                    type: 'POST',
+                    data: { talepId: talepId },
+                    success: function () {
+                        formuYukle(talepId);
+                    },
+                    error: function () {
+                        alert("Talep durumu güncellenemedi.");
+                    }
+                });
+            }
+
+            function formuYukle(id) {
+                $("#step1").addClass("d-none");
+                $("#step2").removeClass("d-none");
+
+                $("#modalAtamaIcerik").html("<p class='text-muted'>Form yükleniyor...</p>");
+
+                $.ajax({
+                    url: '/AdminPanel/GetGorevAtamaForm?talepId=' + id,
+                    type: 'GET',
+                    success: function (html) {
+                        $("#modalAtamaIcerik").html(html);
+
+                        // Select2 uygulaması
+                        $('#SecilenPersonelIdleri').select2({
+                            placeholder: "Personel seçin",
+                            width: '100%',
+                            allowClear: true,
+                            dropdownParent: $('#detayModal') 
+                        });
+                    },
+                    error: function () {
+                        $("#modalAtamaIcerik").html("<p class='text-danger'>Form yüklenemedi.</p>");
+                    }
+                });
+            }
+
+        });
+
+
+        // Step 2 → Step 1 geri dönüş
+        $(document).on("click", "#btnGeriDon", function () {
+            $("#step2").addClass("d-none");
+            $("#step1").removeClass("d-none");
+        });
+
+
+        // Görev atama formu gönderildiğinde
+        $(document).on("submit", "#gorevAtamaForm", function (e) {
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: "POST",
+                url: "/AdminPanel/GorevAta",
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Başarılı!',
+                            text: response.message,
+                            confirmButtonText: 'Tamam'
+                        }).then(() => {
+                            // Modalı kapat, sayfayı yenile
+                            $("#gorevDetayModal").modal("hide");
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata',
+                            text: response.message || "Görev atanamadı. Lütfen tekrar deneyin.",
+                            confirmButtonText: 'Tamam'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Sunucu Hatası',
+                        text: 'İşlem sırasında bir hata oluştu.',
+                        confirmButtonText: 'Tamam'
+                    });
+                }
+            });
+        });
+
+
+        // Talep reddet (SweetAlert2 ile)
+        $(document).on("click", "#btnReddet", function () {
+            const talepId = $(this).data("talep-id");
+
+            Swal.fire({
+                title: 'Talebi Reddet',
+                text: "Bu talebi reddetmek istediğinize emin misiniz?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Evet, reddet',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/AdminPanel/ReddetTalep',
+                        type: 'POST',
+                        data: { talepId: talepId },
+                        success: function () {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Reddedildi',
+                                text: 'Talep başarıyla reddedildi.',
+                                confirmButtonText: 'Tamam'
+                            }).then(() => {
+                                $("#detayModal").modal("hide");
+
+                                const aktifSayfa = $(".pagination .active .page-link").text() || 1;
+                                $.get('/AdminPanel/GetGelenTalepler?page=' + aktifSayfa, function (html) {
+                                    $("#gelenTaleplerContainer").html(html);
+                                });
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata',
+                                text: 'Talep reddedilirken bir hata oluştu.',
+                                confirmButtonText: 'Tamam'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+
+        // Sayfa yüklendiğinde gelen talepleri getir
+        $(document).ready(function () {
+            GelenTalepleriGetir(1);
+        });
+
+        function GelenTalepleriGetir(page) {
+            $.ajax({
+                url: '/AdminPanel/GetGelenTalepler?page=' + page,
+                type: 'GET',
+                success: function (result) {
+                    $("#gelenTaleplerContainer").html(result);
+                },
+                error: function () {
+                    alert("Gelen talepler yüklenirken hata oluştu.");
+                }
+            });
+        }
+
+        // Sayfalama tıklaması
+        $(document).on("click", ".btn-gelen-talep-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+            GelenTalepleriGetir(page);
+        });
+
+        // Görev talebi form submit (yeni talep)
+        $(document).on('submit', '#gorevTalepForm', function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+            var formData = form.serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("YeniGorevTalebi", "GorevTalebi")',
+                data: formData,
+                headers: {
+                    'RequestVerificationToken': $('#gorevTalepForm input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Başarılı',
+                            text: response.message || 'Talep başarıyla oluşturuldu',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            $('#yeniTalepModal').modal('hide');
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata',
+                            text: response.message || 'Talep oluşturulamadı.'
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    let msg = "Bir hata oluştu.";
+
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        msg = "";
+                        xhr.responseJSON.errors.forEach(function (error) {
+                            msg += `Alan: ${error.Field} - Hata: ${error.Errors.join(", ")}\n`;
+                        });
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata',
+                        text: msg
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.log("Hata:", xhr.responseText);
+                    alert("Bir hata oluştu.");
+                }
+            });
+        });
+
+        // Ulaşım türüne göre plaka alanı göster/gizle
+        $(document).on("change", "#ulasimSelect", function () {
+            const selected = $(this).val();
+            const plakaInput = $("#plakaInput input");
+
+            if (selected === "Kiralık Araç" || selected === "Kendi Aracı") {
+                $("#plakaInput").show();
+                plakaInput.attr("required", "required");
+            } else {
+                $("#plakaInput").hide();
+                plakaInput.removeAttr("required");
+            }
+        });
+
+
+       
+    </script>
+
+}

@@ -1,0 +1,179 @@
+﻿
+
+h4,h2{
+    color: #4B49AC !important ; 
+}
+
+
+body {
+    background-color: #F0F4F8;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    padding: 30px;
+    border: none;
+}
+
+.table thead th {
+    background-color: #4B49AC; /* Primary koyu renk */
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-size: 0.9rem;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    font-size: 0.95rem;
+    color: #2c3e50;
+}
+
+.btn {
+    transition: all 0.3s ease-in-out;
+    font-weight: 500;
+}
+
+.btn-outline-primary:hover {
+    background-color: #4B49AC;
+    color: #ffffff;
+    border: 1px solid #4B49AC;
+}
+
+.btn-outline-danger:hover {
+    background-color: #F3797E;
+    color: #ffffff;
+    border: 1px solid #F3797E;
+}
+
+.btn-ekle {
+    background-color: #7DA0FA;
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border: 2px solid transparent; 
+    transition: all 0.2s ease;
+}
+
+    .btn-ekle:hover {
+        background-color: #4B49AC;
+        color: white;
+        border: 2px solid #4B49AC;
+    }
+
+/* Düzenle Butonu */
+.btn-duzenle {
+    background-color: #7DA0FA;
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border: 2px solid transparent; 
+    transition: all 0.2s ease;
+}
+
+    .btn-duzenle:hover {
+        background-color: transparent;
+        color: #7DA0FA;
+        border: 2px solid #7DA0FA;
+    }
+
+/* Sil Butonu */
+.btn-sil {
+    background-color: #F3797E;
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border: 2px solid transparent; 
+    transition: all 0.2s ease;
+}
+
+    .btn-sil:hover {
+        background-color: transparent;
+        color: #F3797E;
+        border: 2px solid #F3797E;
+    }
+
+
+
+.badge-ozel-rol {
+    background-color: #98BDFF; /* Açık mavi badge */
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+}
+
+.search-container {
+    position: relative;
+    width: 250px;
+}
+
+    .search-container .search-input {
+        padding-right: 36px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .search-container .search-button {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #4B49AC;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+.custom-pagination .page-item.active .page-link {
+    background-color: #4B49AC;
+    color: white;
+    border-color: #4B49AC;
+    font-weight: 600;
+}
+
+.custom-pagination .page-link {
+    color: #4B49AC;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+    .custom-pagination .page-link:hover {
+        background-color: #eef1ff;
+    }
+
+.btn-gerial {
+    background: linear-gradient(135deg, #F0F4F8, #DCE5F2);
+    color: #4B49AC;
+    border: 1px solid #4B49AC;
+}
+
+    .btn-gerial:hover {
+        background: white;
+        color: #4B49AC;
+        border: 1px solid #4B49AC;
+    }
+
+.btn-pdf {
+    background-color: #54ceb8;
+    color: white;
+    border: 1px solid #54ceb8;
+    height:30px;
+    width:50px;
+}
+
+    .btn-pdf:hover {
+        background: white;
+        color: #54ceb8;
+        border: 1px solid #54ceb8;
+    }

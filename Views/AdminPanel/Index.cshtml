@@ -1,0 +1,313 @@
+﻿@model PersonelTakip.Models.AdminDashboardViewModel
+@using Microsoft.AspNetCore.Identity
+@using PersonelTakip.Services
+@inject PermissionService PermissionService
+@using System.Text.Json
+
+<!--ADMIN PANEL DASHBOARD-->
+
+@{
+    ViewData["Title"] = "Admin Paneli";
+    Layout = "~/Views/Shared/_AdminPanelLayout.cshtml";
+
+    var rolLabels = string.Join(",", Model.RolDagilimi.Keys.Select(k =>
+        $"'{System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(k)}'"));
+    var rolValues = string.Join(",", Model.RolDagilimi.Values);
+
+    var gorevLabels = string.Join(",", Model.GorevDurumlari.Keys.Select(k =>
+        $"'{System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(k)}'"));
+    var gorevValues = string.Join(",", Model.GorevDurumlari.Values);
+
+    var talepLabels = string.Join(",", Model.TalepDurumlari.Keys.Select(k =>
+        $"'{System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(k)}'"));
+    var talepValues = string.Join(",", Model.TalepDurumlari.Values);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+}
+<body>
+
+    <h2 class="mb-4">Dashboard</h2>
+
+    <div class="row">
+
+
+        @if (Model.KullaniciAdminMi && await PermissionService.HasPermissionAsync(User, "KullaniciGoruntule"))
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Kullanıcı Rol Dağılımı</h5>
+                        <canvas id="kullaniciChart" style="max-height:250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (await PermissionService.HasPermissionAsync(User, "GorevIslemleriYapabilir"))
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Görev Durumları</h5>
+                        <canvas id="gorevChart" style="max-height:250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (await PermissionService.HasPermissionAsync(User, "TalepIslemleriYapabilir"))
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Talep Durumları</h5>
+                        <canvas id="talepChart" style="max-height:250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+
+    <div class="row">
+        <!-- Görev Önizleme -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Aktif Görevlerim</h5>
+                    @if (Model.AktifGorevler != null && Model.AktifGorevler.Any())
+                    {
+                        <div id="aktifGorevlerCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                @for (int i = 0; i < Model.AktifGorevler.Count; i++)
+                                {
+                                    var gorev = Model.AktifGorevler[i];
+                                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                                        <div class="card crd-gorev">
+                                            <div class="card-body">
+                                                <h6 class="card-title">@gorev.GorevAdi</h6>
+                                                <p class="card-text">
+                                                    <strong>Şehir:</strong> @gorev.Sehir<br />
+                                                    <strong>Kurum:</strong> @gorev.Kurum<br />
+                                                    <strong>Başlangıç:</strong> @gorev.BaslangicTarihi.ToShortDateString()
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <button class="carousel-control-prev" type="button" data-bs-target="#aktifGorevlerCarousel" data-bs-slide="prev">
+                                <span class="custom-carousel-icon">&#8249;</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#aktifGorevlerCarousel" data-bs-slide="next">
+                                <span class="custom-carousel-icon">&#8250;</span>
+                            </button>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center">Size atanmış aktif görev bulunmamaktadır.</p>
+                    }
+
+            
+                </div>
+            </div>
+        </div>
+        <!-- Hızlı Erişim Butonları -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Hızlı Erişim</h5>
+                    <div class="d-grid gap-2 d-md-block">
+                        <div class="row g-2">
+                            @if (await PermissionService.HasPermissionAsync(User, "KullaniciEkleButonunuGor"))
+                            {
+                                <div class="col-6">
+                                    <a href="/AdminPanel/KullaniciEkle" class="shortcut-btn btn-kullanici w-100">
+                                        👤<br><small>Kullanıcı Ekle</small>
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-6">
+                                    <a href="/AdminPanel/Profilim" class="shortcut-btn btn-profil w-100">
+                                        👤<br><small>Profilim</small>
+                                    </a>
+                                </div>
+                            }
+                            <div class="col-6">
+                                <a href="/AdminPanel/GorevPaneli" class="shortcut-btn btn-gorev w-100">
+                                    📝<br><small>Görev Paneli</small>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="/AdminPanel/Gorevlerim" class="shortcut-btn btn-talep w-100">
+                                    📩<br><small>Görevlerim</small>
+                                </a>
+                            </div>
+                            @if (await PermissionService.HasPermissionAsync(User, "TanimlarButonunuGor"))
+                            {
+                                <div class="col-6">
+                                    <a href="/AdminPanel/Tanimlar" class="shortcut-btn btn-tanim w-100">
+                                        ⚙️<br><small>Tanımlar</small>
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-6">
+                                    <a href="/AdminPanel/TalepYonetimi" class="shortcut-btn btn-rapor w-100">
+                                        📊<br><small>Taleplerim</small>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Duyurular -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-body overflow-auto" style="max-height: 290px;">
+                    <h5 class="card-title text-center">Duyurular</h5>
+
+                    @if (Model.AktifDuyurular != null && Model.AktifDuyurular.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var duyuru in Model.AktifDuyurular)
+                            {
+                                <div class="duyuru-item mb-3 p-3 rounded">
+                                    <div class="d-flex align-items-start">
+                                        <div class="me-2 mt-1 text-primary fs-5">📢</div>
+                                        <div>
+                                            <strong class="text-dark">@duyuru.Baslik</strong><br />
+                                            <span class="text-muted d-block mb-1">
+                                                @(duyuru.Icerik.Length > 60
+                                                    ? duyuru.Icerik.Substring(0, 60) + "..."
+                                                    : duyuru.Icerik)
+                                            </span>
+                                            <small class="text-secondary d-block mb-1">
+                                                📅 @duyuru.BaslangicTarihi.ToString("dd.MM.yyyy")
+                                            </small>
+
+                                            @if (duyuru.Icerik.Length > 60)
+                                            {
+                                                <a href="javascript:void(0);"
+                                                   class="text-primary small"
+                                                   onclick="duyuruDetayModalAc(@duyuru.Id)">
+                                                    Devamını Gör
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center">Şu anda aktif duyuru bulunmamaktadır.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</body>
+
+<!-- Duyuru Detay Modal -->
+<div class="modal fade" id="duyuruDetayModal" tabindex="-1" aria-labelledby="duyuruDetayModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="duyuruDetayContent">
+            <!-- AJAX ile doldurulacak -->
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        function duyuruDetayModalAc(id) {
+            $.get("/AdminPanel/GetDuyuruDetay", { id: id }, function (html) {
+                $("#duyuruDetayContent").html(html);
+                $("#duyuruDetayModal").modal("show");
+            });
+        }
+
+    </script>
+
+    <script>
+        const kullaniciData = {
+            labels: [@Html.Raw(rolLabels)],
+            datasets: [{
+                data: [@rolValues],
+                backgroundColor: ['#4B49AC', '#54ceb8', '#f471d7', '#642cf4', '#befffd', '#607D8B']
+            }]
+        };
+
+        const gorevData = {
+            labels: [@Html.Raw(gorevLabels)],
+            datasets: [{
+                data: [@gorevValues],
+                backgroundColor: ['#7DA0FA', '#7978E9', '#F3797E']
+            }]
+        };
+
+        const talepData = {
+            labels: [@Html.Raw(talepLabels)],
+            datasets: [{
+                data: [@talepValues],
+                backgroundColor: ['#334680', '#786DAE', '#DCE1F7']
+            }]
+        };
+
+        const chartOptions = {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        };
+
+        if (document.getElementById('kullaniciChart')) {
+            new Chart(document.getElementById('kullaniciChart'), {
+                type: 'doughnut',
+                data: kullaniciData,
+                options: chartOptions
+            });
+        }
+
+        if (document.getElementById('gorevChart')) {
+            new Chart(document.getElementById('gorevChart'), {
+                type: 'doughnut',
+                data: gorevData,
+                options: chartOptions
+            });
+        }
+
+        if (document.getElementById('talepChart')) {
+            new Chart(document.getElementById('talepChart'), {
+                type: 'doughnut',
+                data: talepData,
+                options: chartOptions
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    
+}
+

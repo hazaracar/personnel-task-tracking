@@ -1,0 +1,56 @@
+﻿@model PersonelTakip.Models.GorevTalebi
+
+<!-- STEP 1: Talep Detayları -->
+<div id="step1" class="modal-step">
+    <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Görev Talebi Detayları</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    </div>
+
+    <div class="modal-body p-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="detay-kutu"><span class="detay-baslik">Talepte Bulunan</span> <span>@Model.Kullanici?.FirstName @Model.Kullanici?.LastName</span></div>
+                <div class="detay-kutu"><span class="detay-baslik">Kurum</span> <span>@Model.Kullanici?.KurumNavigation?.Ad</span></div>
+                <div class="detay-kutu"><span class="detay-baslik">Başlangıç Tarihi</span> <span>@Model.BaslangicTarihi.ToString("dd.MM.yyyy")</span></div>
+                <div class="detay-kutu"><span class="detay-baslik">Bitiş Tarihi</span> <span>@Model.BitisTarihi.ToString("dd.MM.yyyy")</span></div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detay-kutu"><span class="detay-baslik">Talep Türü</span> <span>@Model.TalepTuru</span></div>
+                <div class="detay-kutu"><span class="detay-baslik">Personel Sayısı</span> <span>@Model.TalepEdilenPersonelSayisi</span></div>
+                <div class="detay-kutu"><span class="detay-baslik">Planlı mı?</span> <span>@(Model.PlanliMi ? "Planlı" : "Plansız")</span></div>
+                <div class="detay-kutu"><span class="detay-baslik">Durum</span> <span>@Model.Durum</span></div>
+            </div>
+
+            <div class="col-12">
+                <div class="detay-kutu"><span class="detay-baslik">Açıklama</span> <span>@Model.Aciklama</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer d-flex justify-content-between">
+        <div id="step1Buttons">
+            <button type="button" class="btn btn-success" id="btnGorevAta" data-talep-id="@Model.Id" data-durum="@Model.Durum">Görev Ata</button>
+            <button type="button" class="btn btn-danger" id="btnReddet" data-talep-id="@Model.Id">Reddet</button>
+        </div>
+    </div>
+</div>
+
+<!-- STEP 2: Görev Atama Formu (başta gizli) -->
+<div id="step2" class="modal-step d-none">
+    <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Görev Atama</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    </div>
+
+    <div class="modal-body p-4">
+        <div id="modalAtamaIcerik">
+            <p class="text-muted">Form yükleniyor...</p>
+        </div>
+    </div>
+
+    <div class="modal-footer d-flex justify-content-end">
+        <button type="button" class="btn btn-secondary" id="btnGeriDon">Geri</button>
+    </div>
+</div>

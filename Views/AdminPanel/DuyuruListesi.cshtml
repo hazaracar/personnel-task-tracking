@@ -1,0 +1,220 @@
+﻿@model List<PersonelTakip.Models.Duyuru>
+@{
+    ViewData["Title"] = "Duyuru Listesi";
+    Layout = "~/Views/Shared/_AdminPanelLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tanimlar.css" asp-append-version="true" />
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0" style="color:#4B49AC;">Duyuru Listesi</h3>
+    <button class="btn btn-olustur" data-bs-toggle="modal" data-bs-target="#duyuruEkleModal">
+        <i class="fas fa-plus me-1"></i> Yeni Duyuru Oluştur
+    </button>
+</div>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Başlık</th>
+            <th>İçerik</th>
+            <th>Başlangıç</th>
+            <th>Bitiş</th>
+            <th>Oluşturan</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var duyuru in Model)
+            {
+                <tr>
+                    <td>@duyuru.Baslik</td>
+                    <td>@(duyuru.Icerik.Length > 50 ? duyuru.Icerik.Substring(0, 50) + "..." : duyuru.Icerik)</td>
+                    <td>@duyuru.BaslangicTarihi.ToString("dd.MM.yyyy")</td>
+                    <td>@duyuru.BitisTarihi.ToString("dd.MM.yyyy")</td>
+                    <td>
+                        @if (duyuru.OlusturanKullanici != null)
+                        {
+                            @($"{duyuru.OlusturanKullanici.FirstName} {duyuru.OlusturanKullanici.LastName}")
+                        }
+                        else
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                    </td>
+
+
+                    <td>
+                        <a href="javascript:void(0);"
+                           class="btn btn-sm btn-duzenle"
+                           data-id="@duyuru.Id"
+                           onclick="duyuruDuzenleModalAc(this)">
+                            Düzenle
+                        </a>
+                        <a href="javascript:void(0);"
+                           class="btn btn-sm btn-danger"
+                           onclick="duyuruSil(@duyuru.Id)">
+                            Sil
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center text-muted">Henüz duyuru bulunmamaktadır.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<!--Duyuru Ekle Modal -->
+<div class="modal fade" id="duyuruEkleModal" tabindex="-1" aria-labelledby="duyuruEkleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            @await Html.PartialAsync("_DuyuruEklePartial", new PersonelTakip.Models.Duyuru())
+        </div>
+    </div>
+</div>
+
+<!--Duyuru Düzenle Modal -->
+
+
+<div class="modal fade" id="duyuruDuzenleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="duyuruDuzenleModalContent">
+            <!-- AJAX ile yüklenir -->
+        </div>
+    </div>
+</div>
+
+
+
+
+<form id="__AjaxAntiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+
+@section Scripts {
+    <script>
+        $(document).on("submit", "#duyuruEkleForm", function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+
+            $.ajax({
+                type: "POST",
+                url: form.attr("action"),
+                data: form.serialize(),
+                success: function (result) {
+                    if (result.success) {
+                        // işlem başarılı
+                        Swal.fire("Başarılı", "Duyuru oluşturuldu", "success");
+                        $('#duyuruEkleModal').modal('hide');
+                        location.reload();
+                    } else {
+                        console.error("Model hataları:", result.errors); 
+                        Swal.fire("Hata!", "Form verileri hatalı. Konsolu kontrol edin.", "error");
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Sunucu hatası:", xhr.responseText);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: 'Sunucu hatası oluştu. Lütfen tekrar deneyin.'
+                    });
+                }
+            });
+        });
+
+    </script>
+
+    <script>
+        function duyuruDuzenleModalAc(button) {
+            var id = $(button).data("id");
+            $.get("/AdminPanel/GetDuyuruDuzenleForm", { id: id }, function (html) {
+                $("#duyuruDuzenleModalContent").html(html);
+                $("#duyuruDuzenleModal").modal("show");
+            });
+        }
+
+        $(document).on("submit", "#duyuruDuzenleForm", function (e) {
+            e.preventDefault();
+            var form = $(this);
+
+            $.ajax({
+                type: "POST",
+                url: form.attr("action"),
+                data: form.serialize(),
+                success: function (result) {
+                    if (result.success) {
+                        Swal.fire("Başarılı", "Duyuru güncellendi", "success");
+                        $('#duyuruDuzenleModal').modal('hide');
+                        location.reload();
+                    } else {
+                        Swal.fire("Hata!", result.message || "Güncelleme başarısız", "error");
+                    }
+                },
+                error: function () {
+                    Swal.fire("Hata!", "Sunucu hatası oluştu", "error");
+                }
+            });
+        });
+
+
+    </script>
+   
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function duyuruSil(id) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: "Bu duyuruyu silmek üzeresiniz!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Evet, sil!',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/AdminPanel/DuyuruSil/" + id,
+                        headers: {
+                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function () {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Silindi!',
+                                text: 'Duyuru başarıyla silindi.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata!',
+                                text: 'Duyuru silinirken bir hata oluştu.'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

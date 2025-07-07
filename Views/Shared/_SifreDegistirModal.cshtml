@@ -1,0 +1,58 @@
+﻿@model PersonelTakip.Models.ViewModels.SifreDegistirViewModel
+
+<div class="modal fade" id="sifreDegistirModal" tabindex="-1" aria-labelledby="sifreDegistirModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="sifreDegistirForm" asp-controller="Hesap" asp-action="SifreDegistir" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sifreDegistirModalLabel">Şifre Değiştir</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label asp-for="EskiSifre" class="form-label"></label>
+                        <div class="input-group">
+                            <input asp-for="EskiSifre" class="form-control" type="password" />
+                            <button type="button" style="background-color:transparent;" class="btn toggle-password" data-target="EskiSifre">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="EskiSifre" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="YeniSifre" class="form-label"></label>
+                        <div class="input-group">
+                            <input asp-for="YeniSifre" class="form-control" type="password" />
+                            <button type="button" style="background-color:transparent;" class="btn toggle-password" data-target="YeniSifre">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="YeniSifre" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="YeniSifreTekrar" class="form-label"></label>
+                        <div class="input-group">
+                            <input asp-for="YeniSifreTekrar" class="form-control" type="password" />
+                            <button type="button" style="background-color:transparent;" class="btn toggle-password" data-target="YeniSifreTekrar">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="YeniSifreTekrar" class="text-danger"></span>
+                    </div>
+
+
+                    <div id="sifreDegistirSonuc" class="text-success fw-semibold"></div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" style="background-color:#F3797E; color:white;" class="btn" data-bs-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Şifreyi Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

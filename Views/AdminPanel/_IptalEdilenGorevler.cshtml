@@ -1,0 +1,91 @@
+﻿@model IEnumerable<PersonelTakip.Models.Gorev>
+
+@{
+    int aktifSayfa = ViewBag.AktifSayfa ?? 1;
+    int sayfaBoyutu = 5;
+    int sayac = ((aktifSayfa - 1) * sayfaBoyutu) + 1;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/gorevpaneli.css" />
+}
+
+<table class="table table-bordered table-hover mt-3">
+    <thead class="table-light">
+        <tr>
+            <th>#</th>
+            <th>Personel</th>
+            <th>Görev Adı</th>
+            <th>Şehir</th>
+            <th>Kurum</th>
+            <th>Ulaşım Türü</th>
+            <th>Konaklama Türü</th>
+            <th>Avans Türü</th>
+            <th>Başlangıç</th>
+            <th>Bitiş</th>
+            <th>Yönetici Açıklaması</th>
+            <th>Durum</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var gorev in Model)
+            {
+                <tr>
+                    <td>@sayac</td>
+                    <td>@gorev.Kullanici.FirstName @gorev.Kullanici.LastName</td>
+                    <td>@gorev.GorevAdi</td>
+                    <td>@gorev.Sehir</td>
+                    <td>@gorev.Kurum</td>
+                    <td>@gorev.UlasimTuru</td>
+                    <td>@gorev.KonaklamaTuru</td>
+                    <td>@gorev.HarcamaTuru</td>
+                    <td>
+                        @gorev.BaslangicTarihi.ToString("dd.MM.yyyy")
+                        @if (gorev.BaslangicSaati.HasValue)
+                        {
+                            <span> @gorev.BaslangicSaati.Value.ToString(@"hh\:mm")</span>
+                        }
+                    </td>
+                    <td>
+                        @gorev.BitisTarihi.ToString("dd.MM.yyyy")
+                        @if (gorev.BitisSaati.HasValue)
+                        {
+                            <span> @gorev.BitisSaati.Value.ToString(@"hh\:mm")</span>
+                        }
+                    </td>
+                    <td>@gorev.YoneticiAciklama</td>
+                    <td><span class="badge bg-danger">İptal Edildi</span></td>
+                    <td>
+                        <button class="btn btn-success btn-sm btn-yeniden-ata" data-gorev-id="@gorev.Id">
+                            Yeniden Ata
+                        </button>
+                    </td>
+                </tr>
+                sayac++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="13" class="text-center text-muted">İptal edilmiş görev bulunmamaktadır.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (ViewBag.ToplamSayfa > 1)
+{
+    <nav class="mt-3">
+        <ul class="pagination justify-content-center custom-pagination">
+            @for (int i = 1; i <= ViewBag.ToplamSayfa; i++)
+            {
+                <li class="page-item @(i == ViewBag.AktifSayfa ? "active" : "")">
+                    <a href="#" class="page-link btn-iptal-page" data-page="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

@@ -1,0 +1,48 @@
+﻿@model PersonelTakip.Models.Kurum
+
+<style>
+    .btn-primary {
+        background-color: #4B49AC;
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: #3e3b94;
+        }
+
+    .btn-secondary {
+        background-color: #F3797E;
+        color: white;
+    }
+
+        .btn-secondary:hover {
+            background-color: #e16368;
+        }
+
+</style>
+
+<form id="kurumEkleForm" asp-action="KurumEkle" asp-controller="AdminPanel" method="post">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label asp-for="Ad" class="form-label">Kurum İsmi</label>
+        <input asp-for="Ad" class="form-control" />
+        <span asp-validation-for="Ad" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Sehir" class="form-label">Şehir</label>
+        <select asp-for="Sehir" class="form-select" asp-items="@(new SelectList(ViewBag.Iller, "Value", "Text"))">
+            <option value="">-- Şehir Seçin --</option>
+        </select>
+        <span asp-validation-for="Sehir" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-check mb-3">
+        <input asp-for="AktifMi" class="form-check-input" />
+        <label asp-for="AktifMi" class="form-check-label">Aktif Mi?</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+</form>

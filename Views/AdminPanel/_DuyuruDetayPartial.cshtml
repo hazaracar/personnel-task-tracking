@@ -1,0 +1,15 @@
+﻿@model PersonelTakip.Models.Duyuru
+
+<div class="modal-header">
+    <h5 class="modal-title">@Model.Baslik</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+</div>
+<div class="modal-body">
+    <p>@Model.Icerik</p>
+</div>
+<div class="modal-footer">
+    <small class="text-muted">
+        @Model.BaslangicTarihi.ToString("dd.MM.yyyy") <br />
+        
+    </small>
+</div>

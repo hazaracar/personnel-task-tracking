@@ -1,0 +1,171 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+@{
+    ViewData["Title"] = "Rol Listesi";
+    Layout = "~/Views/Shared/_AdminPanelLayout.cshtml";
+}
+
+<h3 style="color:#4B49AC;">Rol Listesi</h3>
+
+<div class="mb-3 text-end">
+    @if (ViewBag.TanimlamaIslemiYapabilir == true)
+    {
+        <button class="btn btn-success" id="yeniRolBtn">
+            <i class="fa fa-plus"></i> Yeni Rol
+        </button>
+    }
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="rolEkleModal" tabindex="-1" aria-labelledby="rolEkleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rolEkleModalLabel">Yeni Rol Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body" id="rolEkleModalBody">
+                <!-- Form buraya yüklenecek -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Rol Adı</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rol in Model)
+        {
+            <tr>
+                <td>@rol.Name</td>
+                <td>
+                    @if (ViewBag.TanimlamaIslemiYapabilir == true)
+                    {
+                        <button class="btn btn-danger btn-sm silRolBtn" data-id="@rol.Id">
+                            <i class="fa fa-trash"></i> Sil
+                        </button>
+                    }
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form method="post">@Html.AntiForgeryToken()</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            // Modal aç
+            $("#yeniRolBtn").click(function () {
+                $.get("/AdminPanel/RolEkle", function (data) {
+                    $("#rolEkleModalBody").html(data);
+                    $("#rolEkleModal").modal("show");
+                });
+            });
+
+            // Rol ekle form submit
+            $(document).on("submit", "#rolEkleForm", function (e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr("action"),
+                    type: "POST",
+                    data: form.serialize(),
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success) {
+                            $("#rolEkleModal").modal("hide");
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Başarılı',
+                                text: 'Rol başarıyla eklendi.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata',
+                                text: 'Rol eklenemedi. Lütfen tüm alanları kontrol edin.'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata',
+                            text: 'Kayıt sırasında bir hata oluştu.'
+                        });
+                    }
+
+                });
+            });
+
+            // Rol silme
+            $(document).on("click", ".silRolBtn", function () {
+                const birimId = $(this).data("id");
+
+                Swal.fire({
+                    title: 'Emin misiniz?',
+                    text: "Bu rolü silmek üzeresiniz.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Evet, sil!',
+                    cancelButtonText: 'Vazgeç'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/AdminPanel/RolSil",
+                            type: "POST",
+                            data: {
+                                id: birimId,
+                                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').first().val()
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Başarılı',
+                                        text: 'Rol başarıyla silindi.',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Hata',
+                                        text: 'Rol silinemedi. Lütfen tekrar deneyin.'
+                                    });
+                                }
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Hata',
+                                    text: 'Silme işlemi sırasında bir hata oluştu.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+}

@@ -1,0 +1,365 @@
+﻿@model PersonelTakip.Models.ViewModels.PersonelDashboardViewModel
+@{
+    ViewData["Title"] = "Panel";
+    Layout = "~/Views/Shared/_PersonelLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/personel-dashboard.css" asp-append-version="true" />
+}
+
+
+<div class="container mt-4">
+    <!-- ÜST ALAN: 3 Kartlık Satır -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <h5 class="card-title text-center">Görev Durumlarım</h5>
+                    <canvas id="gorevDonut" style="max-height: 200px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <h5 class="card-title text-center" >Açtığım Talepler</h5>
+                    <canvas id="talepDonut" style="max-height: 200px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center">TO DO</h5>
+
+                    <div class="input-group mb-3">
+                        <input type="text" id="todoInput" class="form-control" placeholder="Yapılacak bir şey yaz...">
+                        <button class="btn btn-ekle" type="button" onclick="addTodo()">+ Ekle</button>
+                    </div>
+
+                    <ul class="list-group flex-grow-1 overflow-auto" id="todoList" style="max-height: 180px;"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALT ALAN: 3 Kartlık Satır -->
+    <div class="row">
+        <!-- Carousel -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Atandığım Görevler</h5>
+                    @if (Model.AktifGorevler != null && Model.AktifGorevler.Any())
+                    {
+                        <div id="gorevCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                @{
+                                    int index = 0;
+                                    foreach (var gorev in Model.AktifGorevler)
+                                    {
+                                        var activeClass = index == 0 ? "active" : "";
+                                            <div class="carousel-item @activeClass">
+                                                <div class="crd-gorev text-center">
+                                                    <strong>@gorev.GorevAdi</strong><br />
+                                                    <span>@gorev.Sehir - @gorev.Kurum</span><br />
+                                                    <small>@gorev.BaslangicTarihi.ToShortDateString() → @gorev.BitisTarihi.ToShortDateString()</small>
+                                                </div>
+                                            </div>
+                                        index++;
+                                    }
+                                }
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#gorevCarousel" data-bs-slide="prev">
+                                <span class="custom-carousel-icon">&#8249;</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#gorevCarousel" data-bs-slide="next">
+                                <span class="custom-carousel-icon">&#8250;</span>
+                            </button>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Aktif görev yok.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Yaklaşan Görevler -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body overflow-auto">
+                    <h5 class="card-title">Yaklaşan Görevler</h5>
+                    @if (Model.YaklasanGorevler != null && Model.YaklasanGorevler.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var g in Model.YaklasanGorevler)
+                            {
+                                var kalanGun = (g.BaslangicTarihi.Date - DateTime.Today).Days;
+                                string renk = kalanGun <= 1 ? "danger" : kalanGun <= 3 ? "uyari" : "info";
+                                string glowClass = renk switch
+                                {
+                                    "danger" => "glow-danger",
+                                    "uyari" => "glow-uyari",
+                                    _ => "glow-info"
+                                };
+
+                                <li class="list-group-item d-flex justify-content-between align-items-center upcoming-task-row">
+                                    <div>
+                                        <div class="fw-bold text-dark">@g.GorevAdi</div>
+                                        <small class="text-muted">@g.Kurum – @g.Sehir</small>
+                                    </div>
+                                    <span class="badge bg-@renk @glowClass">@kalanGun gün</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Yakın zamanda başlayacak görev yok.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Boş Kart -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm d-flex align-items-center justify-content-center text-muted">
+                <div class="card-body overflow-auto" style="max-height: 290px;">
+                    <h5 class="card-title text-center">Duyurular</h5>
+
+                    @if (Model.AktifDuyurular != null && Model.AktifDuyurular.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var duyuru in Model.AktifDuyurular)
+                            {
+                                <div class="duyuru-item mb-3 p-3 rounded">
+                                    <div class="d-flex align-items-start">
+                                        <div class="me-2 mt-1 text-primary fs-5">📢</div>
+                                        <div>
+                                            <strong class="text-dark">@duyuru.Baslik</strong><br />
+                                            <span class="text-muted d-block mb-1">
+                                                @(duyuru.Icerik.Length > 60
+                                                    ? duyuru.Icerik.Substring(0, 60) + "..."
+                                                    : duyuru.Icerik)
+                                            </span>
+                                            <small class="text-secondary d-block mb-1">
+                                                📅 @duyuru.BaslangicTarihi.ToString("dd.MM.yyyy")
+                                            </small>
+
+                                            @if (duyuru.Icerik.Length > 60)
+                                            {
+                                                <a href="javascript:void(0);"
+                                                   class="text-primary small"
+                                                   onclick="duyuruDetayModalAc(@duyuru.Id)">
+                                                    Devamını Gör
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center">Şu anda aktif duyuru bulunmamaktadır.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Duyuru Detay Modal -->
+<div class="modal fade" id="duyuruDetayModal" tabindex="-1" aria-labelledby="duyuruDetayModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="duyuruDetayContent">
+            <!-- AJAX ile doldurulacak -->
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+    <script>
+        function duyuruDetayModalAc(id) {
+            $.get("/PersonelPanel/GetDuyuruDetay", { id: id }, function (html) {
+                $("#duyuruDetayContent").html(html);
+                $("#duyuruDetayModal").modal("show");
+            });
+        }
+    </script>
+
+    <script>
+        const gorevData = {
+            labels: @Html.Raw(Json.Serialize(Model.GorevDurumlari.Keys)),
+            datasets: [{
+                data: @Html.Raw(Json.Serialize(Model.GorevDurumlari.Values)),
+                backgroundColor: ['#4B49AC', '#54ceb8', '#f471d7', '#642cf4', '#befffd']
+            }]
+        };
+
+        const talepData = {
+            labels: @Html.Raw(Json.Serialize(Model.TalepDurumlari.Keys)),
+            datasets: [{
+                data: @Html.Raw(Json.Serialize(Model.TalepDurumlari.Values)),
+                backgroundColor: ['#7DA0FA', '#F3797E', '#7978E9', '#8BC34A', '#E91E63']
+            }]
+        };
+
+        const config1 = {
+            type: 'doughnut',
+            data: gorevData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        };
+
+        const config2 = {
+            type: 'doughnut',
+            data: talepData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        };
+
+        // DOM yüklendikten sonra chartları başlatmak için
+        window.addEventListener('DOMContentLoaded', () => {
+            const gorevChart = new Chart(document.getElementById('gorevDonut'), config1);
+            const talepChart = new Chart(document.getElementById('talepDonut'), config2);
+        });
+    </script>
+
+    <!--TODO LIST-->
+
+    <script>
+        const STORAGE_KEY = 'personel_todo_list';
+
+        window.addEventListener('DOMContentLoaded', () => {
+
+            cleanOldTodos();
+            loadTodos();
+        });
+
+        function cleanOldTodos() {
+            const today = getTodayDate();
+            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+            // Sadece bugüne ait olanları tut
+            const filtered = saved.filter(item => item.date === today);
+
+            // localStorage'u sadece bugüne ait verilerle güncelle
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+        }
+
+
+        function getTodayDate() {
+            const now = new Date();
+            return now.toISOString().split('T')[0]; // YYYY-MM-DD
+        }
+
+        function loadTodos() {
+            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+            const today = getTodayDate();
+            const todaysTodos = saved.filter(item => item.date === today);
+
+            document.getElementById("todoList").innerHTML = '';
+            todaysTodos.forEach(todo => renderTodo(todo.text, todo.done));
+        }
+
+        function saveTodos() {
+            const items = [];
+            const listItems = document.querySelectorAll("#todoList li");
+
+            listItems.forEach(li => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const text = li.querySelector('span').textContent;
+                items.push({
+                    text: text,
+                    done: checkbox.checked,
+                    date: getTodayDate()
+                });
+            });
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+        }
+
+        function addTodo() {
+            const input = document.getElementById("todoInput");
+            const text = input.value.trim();
+            if (text === "") return;
+
+            renderTodo(text, false);
+            saveTodos();
+            input.value = "";
+        }
+
+        function renderTodo(text, done) {
+            const li = document.createElement("li");
+            li.className = "list-group-item d-flex align-items-center justify-content-between";
+
+            const leftPart = document.createElement("div");
+            leftPart.className = "d-flex align-items-center flex-grow-1";
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.className = "form-check-input rounded-circle";
+            checkbox.checked = done;
+
+            const span = document.createElement("span");
+            span.textContent = text;
+            span.classList.add("ms-2");
+            if (done) {
+                span.classList.add("text-decoration-line-through", "text-muted");
+                li.classList.add("completed");
+            }
+
+            checkbox.addEventListener("change", function () {
+                if (this.checked) {
+                    span.classList.add("text-decoration-line-through", "text-muted");
+                    li.classList.add("completed");
+                    document.getElementById("todoList").appendChild(li);
+                } else {
+                    span.classList.remove("text-decoration-line-through", "text-muted");
+                    li.classList.remove("completed");
+                }
+                saveTodos();
+            });
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "btn btn-sm btn-sil ms-2";
+            deleteBtn.innerHTML = "&times;";
+            deleteBtn.title = "Sil";
+            deleteBtn.onclick = function () {
+                li.remove();
+                saveTodos();
+            };
+
+            leftPart.appendChild(checkbox);
+            leftPart.appendChild(span);
+            li.appendChild(leftPart);
+            li.appendChild(deleteBtn);
+
+            document.getElementById("todoList").appendChild(li);
+        }
+
+    </script>
+
+
+}

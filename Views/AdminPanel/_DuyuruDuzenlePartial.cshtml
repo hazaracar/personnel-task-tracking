@@ -1,0 +1,39 @@
+﻿@model PersonelTakip.Models.Duyuru
+
+<form id="duyuruDuzenleForm" asp-action="DuyuruDuzenle" asp-controller="AdminPanel" method="post">
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+
+    <div class="modal-header">
+        <h5 class="modal-title">Duyuru Düzenle</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+    </div>
+    <div class="modal-body">
+        <div class="mb-3">
+            <label asp-for="Baslik" class="form-label"></label>
+            <input asp-for="Baslik" class="form-control" />
+            <span asp-validation-for="Baslik" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Icerik" class="form-label"></label>
+            <textarea asp-for="Icerik" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Icerik" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="BaslangicTarihi" class="form-label"></label>
+            <input asp-for="BaslangicTarihi" type="datetime-local" class="form-control"
+                   value="@Model.BaslangicTarihi.ToString("yyyy-MM-ddTHH:mm")" />
+            <span asp-validation-for="BaslangicTarihi" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="BitisTarihi" class="form-label"></label>
+            <input asp-for="BitisTarihi" type="datetime-local" class="form-control"
+                   value="@Model.BitisTarihi.ToString("yyyy-MM-ddTHH:mm")" />
+            <span asp-validation-for="BitisTarihi" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Kaydet</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">İptal</button>
+    </div>
+</form>

@@ -1,0 +1,175 @@
+﻿<form method="post">
+    @Html.AntiForgeryToken()
+</form>
+
+@model IEnumerable<PersonelTakip.Models.Kurum>
+
+@{
+    ViewData["Title"] = "Kurum Listesi";
+    Layout = "~/Views/Shared/_AdminPanelLayout.cshtml";
+}
+
+
+
+<h3 style="color:#4B49AC;">Kurum Listesi</h3>
+
+<div class="mb-3 text-end">
+    @if (ViewBag.TanimlamaIslemiYapabilir == true)
+    {
+        <button class="btn btn-success" id="yeniKurumBtn">
+            <i class="fa fa-plus"></i> Yeni Kurum
+        </button>
+    }
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="kurumEkleModal" tabindex="-1" aria-labelledby="kurumEkleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="kurumEkleModalLabel">Yeni Kurum Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body" id="kurumEkleModalBody">
+                <!-- Form buraya yüklenecek -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Ad</th>
+            <th>Aktif</th>
+            <th>Oluşturma Tarihi</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var kurum in Model)
+        {
+            <tr>
+                <td>@kurum.Ad</td>
+                <td>@(kurum.AktifMi ? "Evet" : "Hayır")</td>
+                <td>@kurum.OlusturmaTarihi.ToShortDateString()</td>
+                <td>
+                    @if (ViewBag.TanimlamaIslemiYapabilir == true)
+                    {
+                        <button class="btn btn-danger btn-sm silKurumBtn" data-id="@kurum.Id">
+                            <i class="fa fa-trash"></i> Sil
+                        </button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+            // Yeni kurum butonu tıklanınca formu yükle
+            $("#yeniKurumBtn").click(function () {
+                $.get("/AdminPanel/KurumEkle", function (data) {
+                    $("#kurumEkleModalBody").html(data);
+                    $("#kurumEkleModal").modal("show");
+                });
+            });
+
+            // Kurum ekle formu submit işlemi
+            $(document).on("submit", "#kurumEkleForm", function (e) {
+                e.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    url: form.attr("action"),
+                    method: "POST",
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            $("#kurumEkleModal").modal("hide");
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Başarılı',
+                                text: 'Kurum başarıyla eklendi.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata',
+                                text: 'Kurum eklenemedi. Lütfen tüm alanları kontrol edin.'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata',
+                            text: 'Kayıt sırasında bir hata oluştu.'
+                        });
+                    }
+
+                });
+            });
+
+            // Kurum silme işlemi
+            $(document).on("click", ".silKurumBtn", function () {
+                const birimId = $(this).data("id");
+
+                Swal.fire({
+                    title: 'Emin misiniz?',
+                    text: "Bu kurumu silmek üzeresiniz.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Evet, sil!',
+                    cancelButtonText: 'Vazgeç'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/AdminPanel/KurumSil",
+                            type: "POST",
+                            data: {
+                                id: birimId,
+                                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').first().val()
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Başarılı',
+                                        text: 'Kurum başarıyla silindi.',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Hata',
+                                        text: 'Kurum silinemedi. Lütfen tekrar deneyin.'
+                                    });
+                                }
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Hata',
+                                    text: 'Silme işlemi sırasında bir hata oluştu.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

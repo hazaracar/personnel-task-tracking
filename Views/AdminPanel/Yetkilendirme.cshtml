@@ -1,0 +1,94 @@
+﻿@model PersonelTakip.Models.RolYetkiViewModel
+@using PersonelTakip.Helpers
+
+@{
+    ViewData["Title"] = "Yetkilendirme Yönetimi";
+    Layout = "~/Views/Shared/_AdminPanelLayout.cshtml";
+    var roller = ViewBag.Roller as List<Microsoft.AspNetCore.Identity.IdentityRole>;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tanimlar.css" asp-append-version="true" />
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h4 class="mb-4" style="color:#4B49AC;">Rol & Yetki Yönetimi</h4>
+
+            <form asp-action="Yetkilendirme" method="get" class="row g-3 align-items-center mb-4">
+                <div class="col-auto">
+                    <label for="roleId" class="form-label fw-bold">Rol Seçin:</label>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select" id="roleId" name="roleId" onchange="this.form.submit()">
+                        @foreach (var rol in roller)
+                        {
+                            if (rol.Id == Model.RoleId)
+                            {
+                                <option value="@rol.Id" selected>@rol.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@rol.Id">@rol.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </form>
+
+            <form asp-action="Yetkilendirme" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="RoleId" value="@Model.RoleId" />
+                <input type="hidden" name="RoleName" value="@Model.RoleName" />
+
+                <div class="mb-4">
+                    <div style="max-height: 400px; overflow-y: auto;" class="border rounded p-3 shadow-sm bg-light">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 40px;"></th>
+                                    <th>Yetki</th>
+                                    <th>Açıklama</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.Permissions.Count; i++)
+                                {
+                                    var permission = Model.Permissions[i];
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox"
+                                                   class="form-check-input"
+                                                   name="Permissions[@i].SeciliMi"
+                                                   value="true"
+                                            @(permission.SeciliMi ? "checked" : "") />
+                                            <input type="hidden" name="Permissions[@i].PermissionId" value="@permission.PermissionId" />
+                                            <input type="hidden" name="Permissions[@i].Key" value="@permission.Key" />
+                                            <input type="hidden" name="Permissions[@i].Description" value="@permission.Description" />
+                                        </td>
+                                        <td><strong>@permission.Key.ToFriendlyTitle()</strong></td>
+                                        <td><small>@permission.Description</small></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary px-4">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>toastr.success("@TempData["SuccessMessage"]"); </text>
+        }
+    </script>
+}

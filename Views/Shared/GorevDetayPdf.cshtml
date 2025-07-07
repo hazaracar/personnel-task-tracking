@@ -1,0 +1,105 @@
+﻿@model PersonelTakip.Models.ViewModels.GorevDetayPdfViewModel
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 15px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            vertical-align: top;
+        }
+
+        .label {
+            font-weight: bold;
+            background-color: #f0f0f0;
+            width: 30%;
+        }
+
+        .personel-listesi {
+            margin: 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>GÖREV DETAYLARI</h2>
+
+    <table>
+        <tr><td class="label">Görev Adı</td><td>@Model.Gorev.GorevAdi</td></tr>
+        <tr><td class="label">Talep ID</td><td>@Model.Gorev.TalepId</td></tr>
+        <tr><td class="label">Başlangıç</td><td>@Model.Gorev.BaslangicTarihi.ToString("dd.MM.yyyy") @Model.Gorev.BaslangicSaati?.ToString(@"hh\:mm")</td></tr>
+        <tr><td class="label">Bitiş</td><td>@Model.Gorev.BitisTarihi.ToString("dd.MM.yyyy") @Model.Gorev.BitisSaati?.ToString(@"hh\:mm")</td></tr>
+        <tr><td class="label">Şehir</td><td>@Model.Gorev.Sehir</td></tr>
+        <tr><td class="label">Plaka</td><td>@Model.Gorev.AracPlaka</td></tr>
+        <tr><td class="label">Ekipman</td><td>@Model.Gorev.EkipmanBilgisi</td></tr>
+    </table>
+
+    <table>
+        <tr><td class="label">Konaklama Türü</td><td>@Model.Gorev.KonaklamaTuru</td></tr>
+        <tr><td class="label">Ulaşım Türü</td><td>@Model.Gorev.UlasimTuru</td></tr>
+        <tr><td class="label">Harcama Türü</td><td>@Model.Gorev.HarcamaTuru</td></tr>
+        <tr><td class="label">Harcama Tutarı</td><td>@Model.Gorev.HarcamaTutari ₺</td></tr>
+        <tr><td class="label">Yemek Tutarı</td><td>@Model.Gorev.YemekTutari ₺</td></tr>
+    </table>
+
+    <table>
+        <tr><td class="label">Kurum</td><td>@Model.Gorev.Kurum</td></tr>
+        <tr><td class="label">Açıklama</td><td>@Model.Gorev.Aciklama</td></tr>
+        <tr><td class="label">Yönetici Açıklaması</td><td>@Model.Gorev.YoneticiAciklama</td></tr>
+        <tr><td class="label">Durum</td><td>@Model.Gorev.Durum</td></tr>
+        <tr><td class="label">Oluşturma Tarihi</td><td>@Model.Gorev.OlusturmaTarihi.ToString("dd.MM.yyyy HH:mm")</td></tr>
+    </table>
+
+    <table>
+        <tr>
+            <td class="label">Görevi Atayan Kişi</td>
+            <td>@Model.Gorev.AtayanKullanici?.FirstName @Model.Gorev.AtayanKullanici?.LastName</td>
+        </tr>
+        <tr>
+            <td class="label">Atanan Personeller</td>
+            <td>
+                <ul class="personel-listesi">
+                    @if (Model.Gorev.GorevGrupId.HasValue)
+                    {
+                        if (Model.AtananKullanicilar != null && Model.AtananKullanicilar.Any())
+                        {
+                            foreach (var user in Model.AtananKullanicilar)
+                            {
+                                <li>@user.FirstName @user.LastName</li>
+                            }
+                        }
+                        else
+                        {
+                            <li>Atanmış personel bulunamadı.</li>
+                        }
+                    }
+                    else
+                    {
+                        <li>@Model.Gorev.Kullanici?.FirstName @Model.Gorev.Kullanici?.LastName</li>
+                    }
+                </ul>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

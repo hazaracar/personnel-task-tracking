@@ -1,0 +1,183 @@
+﻿<form method="post">
+    @Html.AntiForgeryToken()
+</form>
+
+
+@model IEnumerable<PersonelTakip.Models.Birim>
+
+@{
+    ViewData["Title"] = "Birim Listesi";
+    Layout = "~/Views/Shared/_AdminPanelLayout.cshtml";
+}
+
+<h3 style="color:#4B49AC;">Birim Listesi</h3>
+
+<div class="mb-3 text-end">
+    @if (ViewBag.TanimlamaIslemiYapabilir == true)
+    {
+        <button class="btn btn-success" id="yeniBirimBtn">
+            <i class="fa fa-plus"></i> Yeni Birim
+        </button>
+    }
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="birimEkleModal" tabindex="-1" aria-labelledby="birimEkleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="birimEkleModalLabel">Yeni Birim Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body" id="birimEkleModalBody">
+                <!-- Form buraya yüklenecek -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Ad</th>
+            <th>Aktif</th>
+            <th>Oluşturma Tarihi</th>
+            <th>İşlemler</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var birim in Model)
+        {
+            <tr>
+                <td>@birim.Ad</td>
+                <td>@(birim.AktifMi ? "Evet" : "Hayır")</td>
+                <td>@birim.OlusturmaTarihi.ToShortDateString()</td>
+                
+                <td>
+                        @if (ViewBag.TanimlamaIslemiYapabilir == true)
+                        {
+                        <button class="btn btn-danger btn-sm silBirimBtn" data-id="@birim.Id">
+                            <i class="fa fa-trash"></i> Sil
+                        </button>
+                        }
+                </td>
+
+                
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+            //Modal açma
+            $("#yeniBirimBtn").click(function () {
+                $.get("/AdminPanel/BirimEkle", function (data) {
+                    $("#birimEkleModalBody").html(data);
+                    $("#birimEkleModal").modal("show");
+                });
+            });
+
+            // AJAX ile form gönderme
+            $(document).on("submit", "#birimEkleForm", function (e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr("action"),
+                    type: "POST",
+                    data: form.serialize(),
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success) {
+                            $("#birimEkleModal").modal("hide");
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Başarılı',
+                                text: 'Birim başarıyla eklendi.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata',
+                                text: 'Birim eklenemedi. Lütfen tüm alanları kontrol edin.'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata',
+                            text: 'Kayıt sırasında bir hata oluştu.'
+                        });
+                    }
+
+                });
+            });
+
+            // Birim silme işlemi
+            $(document).on("click", ".silBirimBtn", function () {
+                const birimId = $(this).data("id");
+
+                Swal.fire({
+                    title: 'Emin misiniz?',
+                    text: "Bu birimi silmek üzeresiniz.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Evet, sil!',
+                    cancelButtonText: 'Vazgeç'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/AdminPanel/BirimSil",
+                            type: "POST",
+                            data: {
+                                id: birimId,
+                                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').first().val()
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Başarılı',
+                                        text: 'Birim başarıyla silindi.',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Hata',
+                                        text: 'Birim silinemedi. Lütfen tekrar deneyin.'
+                                    });
+                                }
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Hata',
+                                    text: 'Silme işlemi sırasında bir hata oluştu.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+}

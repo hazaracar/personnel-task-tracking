@@ -1,0 +1,85 @@
+﻿/* Yeni Kullanıcı Ekle Sayfası için özel stiller */
+
+
+
+/* Sayfa genel container'ı */
+.container {
+    max-width: 850px;
+    margin: 30px auto;
+}
+
+/* Kart yapısı */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    border: none;
+}
+
+/* Başlık */
+h4 {
+    color: #4B49AC;
+    font-weight: 600;
+}
+
+/* Form alanları */
+.form-control {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #7DA0FA;
+    transition: all 0.2s ease-in-out;
+}
+
+    .form-control:focus {
+        border-color: #4B49AC;
+        box-shadow: 0 0 0 0.2rem rgba(75, 73, 172, 0.15);
+        outline: none;
+    }
+
+/* Etiketler */
+label {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+/* Hata mesajları */
+.text-danger {
+    font-size: 0.85rem;
+    color: #F3797E;
+}
+
+/* Butonlar */
+.btn-primary {
+    background-color: #4B49AC;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+    .btn-primary:hover {
+        background-color: white;
+        color: #4B49AC;
+        border: 2px solid #4B49AC;
+    }
+
+.btn-secondary {
+    background-color: transparent;
+    color: #2c3e50;
+    border: 2px solid #2c3e50;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+    .btn-secondary:hover {
+        background-color: #2c3e50;
+        color: white;
+    }
+
+/* Responsive spacing */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+}

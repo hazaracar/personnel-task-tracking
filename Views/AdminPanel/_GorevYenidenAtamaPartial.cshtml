@@ -1,0 +1,65 @@
+﻿@model PersonelTakip.Models.ViewModels.GorevYenidenAtamaViewModel
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Görev Yeniden Atama</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+    </div>
+
+    <div class="modal-body">
+        <form id="gorevYenidenAtamaForm">
+            <input type="hidden" name="Id" value="@Model.Id" />
+
+            <div class="mb-3">
+                <label class="form-label">Görev Adı</label>
+                <input type="text" name="GorevAdi" class="form-control" value="@Model.GorevAdi" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="sehirSelect" class="form-label">Şehir</label>
+                <select asp-for="Sehir" asp-items="Model.SehirListesi" class="form-select" required>
+                    <option value="">Şehir Seçin</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Kurum</label>
+                <input type="text" name="Kurum" class="form-control" value="@Model.Kurum" required />
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Başlangıç Tarihi</label>
+                    <input type="date" name="BaslangicTarihi" class="form-control" value="@Model.BaslangicTarihi.ToString("yyyy-MM-dd")" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Bitiş Tarihi</label>
+                    <input type="date" name="BitisTarihi" class="form-control" value="@Model.BitisTarihi.ToString("yyyy-MM-dd")" required />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Başlangıç Saati</label>
+                    <input type="time" name="BaslangicSaati" class="form-control" value="@(Model.BaslangicSaati.HasValue ? Model.BaslangicSaati.Value.ToString(@"hh\:mm") : "")" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Bitiş Saati</label>
+                    <input type="time" name="BitisSaati" class="form-control" value="@(Model.BitisSaati.HasValue ? Model.BitisSaati.Value.ToString(@"hh\:mm") : "")" />
+                </div>
+            </div>
+
+
+            <div class="mb-3">
+                <label for="kullaniciSelect" class="form-label">Atanacak Personel</label>
+                <select asp-for="SeciliKullaniciId" asp-items="Model.KullaniciListesi" class="form-select" required>
+                    <option value="">Personel Seçin</option>
+                </select>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Görevi Yeniden Ata</button>
+            </div>
+        </form>
+    </div>
+</div>

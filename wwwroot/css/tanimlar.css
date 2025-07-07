@@ -1,0 +1,128 @@
+﻿
+
+
+.card {
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+.card-body i {
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+}
+
+.card-kurum i {
+    color: #4B49AC;
+}
+
+.card-birim i {
+    color: #007B8A;
+}
+
+.card-unvan i {
+    color: #F3797E;
+}
+
+.card-rol i {
+    color: #d9845a;
+}
+
+.card-duyuru {
+    border-left: 4px solid #4B49AC;
+}
+
+    .card-duyuru .btn-primary {
+        background-color: #4B49AC;
+        border-color: #4B49AC;
+    }
+
+
+
+
+.btn-kurum {
+    color: #4B49AC;
+    border: 1px solid #4B49AC;
+    background-color: transparent;
+}
+
+    .btn-kurum:hover {
+        background-color: #4B49AC;
+        color: white;
+    }
+
+.btn-birim {
+    color: #007B8A;
+    border: 1px solid #007B8A;
+    background-color: transparent;
+}
+
+    .btn-birim:hover {
+        background-color: #007B8A;
+        color: white;
+    }
+
+.btn-unvan {
+    color: #F3797E;
+    border: 1px solid #F3797E;
+    background-color: transparent;
+}
+
+    .btn-unvan:hover {
+        background-color: #F3797E;
+        color: white;
+    }
+
+.btn-rol {
+    color: #d9845a;
+    border: 1px solid #d9845a;
+    background-color: transparent;
+}
+
+    .btn-rol:hover {
+        background-color: #d9845a;
+        color: white;
+    }
+
+.btn-duzenle {
+    color: white;
+    background-color: #7DA0FA;
+}
+
+    .btn-duzenle:hover {
+        background-color: #7DA0FA;
+        color: white;
+    }
+
+.btn-olustur {
+    color: white;
+    background-color: #4B49AC;
+}
+
+    .btn-olustur:hover {
+        background-color: #4B49AC;
+        color: white;
+    }
+
+
+.card-yetkilendirme i {
+    color: #3d9970;
+}
+
+.btn-yetkilendirme {
+    color: #3d9970;
+    border: 1px solid #3d9970;
+    background-color: transparent;
+}
+
+    .btn-yetkilendirme:hover {
+        background-color: #3d9970;
+        color: white;
+    }
+

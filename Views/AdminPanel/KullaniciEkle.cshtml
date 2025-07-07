@@ -1,0 +1,180 @@
+﻿@model PersonelTakip.Models.KullaniciEkleViewModel
+
+@{
+    ViewData["Title"] = "Yeni Kullanıcı Ekle";
+    Layout = "~/Views/Shared/_AdminPanelLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/kullanici-ekle.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+}
+
+<div class="container mt-4">
+    <div class="card w-100">
+        <div class="card-body">
+            <h4 class="mb-4">@ViewData["Title"]</h4>
+
+            <form asp-action="KullaniciEkle" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <div class="row row-cols-1 row-cols-md-3 g-3">
+                    <div class="col">
+                        <label asp-for="FirstName">Ad</label>
+                        <input asp-for="FirstName" class="form-control" placeholder="Adını girin" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="LastName">Soyad</label>
+                        <input asp-for="LastName" class="form-control" placeholder="Soyadını girin" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="Username">Kullanıcı Adı</label>
+                        <input asp-for="Username" class="form-control" placeholder="Kullanıcı adını girin" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="Password">Şifre</label>
+                        <input asp-for="Password" class="form-control" type="password" placeholder="Şifre girin" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="Email">Email</label>
+                        <input asp-for="Email" class="form-control" placeholder="Email adresini girin" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="Role">Rol</label>
+                        <select asp-for="Role" class="form-control" asp-items="Model.Roller">
+                            <option value="">Rol Seçiniz</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="Birim">Birim</label>
+                        <select asp-for="BirimId" class="form-control" asp-items="Model.Birimler">
+                            <option value="">Birim Seçiniz</option>
+                        </select>
+                        <span asp-validation-for="BirimId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="KurumId">Kurum</label>
+                        <select asp-for="KurumId" class="form-control" asp-items="Model.Kurumlar">
+                            <option value="">Kurum Seçiniz</option>
+                        </select>
+                        <span asp-validation-for="KurumId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="Unvan">Ünvan</label>
+                        <select asp-for="UnvanId" class="form-control" asp-items="Model.Unvanlar">
+                            <option value="">Ünvan Seçiniz</option>
+                        </select>
+                        <span asp-validation-for="UnvanId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="Cinsiyet">Cinsiyet</label>
+                        <select asp-for="Cinsiyet" class="form-control">
+                            <option value="">Cinsiyet Seçiniz</option>
+                            <option value="Erkek">Erkek</option>
+                            <option value="Kadın">Kadın</option>
+                        </select>
+                        <span asp-validation-for="Cinsiyet" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="CalismaSehri">Çalışma Şehri</label>
+                        <select asp-for="CalismaSehri" asp-items="Model.Iller" class="form-control">
+                            <option value="">Şehir Seçiniz</option>
+                        </select>
+                        <span asp-validation-for="CalismaSehri" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="TcKimlikNo">TC Kimlik No</label>
+                        <input asp-for="TcKimlikNo" class="form-control" placeholder="TC Kimlik No girin" />
+                        <span asp-validation-for="TcKimlikNo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="SicilNo">Sicil No</label>
+                        <input asp-for="SicilNo" class="form-control" placeholder="Sicil No girin" />
+                        <span asp-validation-for="SicilNo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="DogumTarihi">Doğum Tarihi</label>
+                        <input asp-for="DogumTarihi" class="form-control" type="date" />
+                        <span asp-validation-for="DogumTarihi" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="IseGirisTarihi">İşe Giriş Tarihi</label>
+                        <input asp-for="IseGirisTarihi" class="form-control" type="date" />
+                        <span asp-validation-for="IseGirisTarihi" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="Telefon">Telefon</label>
+                        <input asp-for="Telefon" class="form-control" placeholder="Telefon numarası girin" />
+                        <span asp-validation-for="Telefon" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="Adres">Adres</label>
+                        <input asp-for="Adres" class="form-control" placeholder="Adres girin" />
+                        <span asp-validation-for="Adres" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="MezuniyetDurumu">Mezuniyet Durumu</label>
+                        <select asp-for="MezuniyetDurumu" asp-items="Model.MezuniyetListesi" class="form-control">
+                            <option value="">Mezuniyet Seçiniz</option>
+                        </select>
+                        <span asp-validation-for="MezuniyetDurumu" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="MezunOlunanOkul">Mezun Olunan Okul</label>
+                        <input asp-for="MezunOlunanOkul" class="form-control" placeholder="Okul adını girin" />
+                        <span asp-validation-for="MezunOlunanOkul" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="MezunBolum">Bölüm</label>
+                        <input asp-for="MezunBolum" class="form-control" placeholder="Bölüm adı girin" />
+                        <span asp-validation-for="MezunBolum" class="text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="CalismaSekliId">Çalışma Şekli</label>
+                        <select asp-for="CalismaSekliId" asp-items="Model.CalismaSekliListesi" class="form-control">
+                            <option value="">Çalışma Şekli Seçiniz</option>
+                        </select>
+                        <span asp-validation-for="CalismaSekliId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                    <a asp-action="KullaniciListesi" class="btn btn-secondary">İptal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+}

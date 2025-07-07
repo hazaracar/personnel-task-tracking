@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Yönetim";
+    Layout = "~/Views/Shared/_AdminPanelLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tanimlar.css" asp-append-version="true" />
+}
+
+<h3 class="mb-4" style="color:#4B49AC;">Yönetim Paneli</h3>
+
+<div class="row g-4">
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card card-duyuru shadow-sm border-0 h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-bullhorn fa-2x mb-3"></i>
+                <h5 class="card-title">Duyuru Oluştur</h5>
+                <p class="card-text text-muted">Yeni duyurular ekleyin, düzenleyin veya kaldırın.</p>
+                <a href="/AdminPanel/DuyuruListesi" class="btn btn-duyuru">Yönet</a>
+            </div>
+        </div>
+    </div>
+
+
+</div>

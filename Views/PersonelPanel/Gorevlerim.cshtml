@@ -1,0 +1,261 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using PersonelTakip.Models
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = (await UserManager.GetRolesAsync(user)).ToList(); 
+
+    var isAdmin = roles.Contains("admin");
+    var isYonetici = roles.Contains("Destek Yoneticisi") ||
+                     roles.Contains("Yazilim Yoneticisi") ||
+                     roles.Contains("Demo Yoneticisi") ||
+                     roles.Contains("Idari Yonetici");
+
+    Layout = (isAdmin || isYonetici)
+        ? "~/Views/Shared/_AdminPanelLayout.cshtml"
+        : "~/Views/Shared/_PersonelLayout.cshtml";
+
+    ViewData["Title"] = "Görevlerim";
+    ViewData["IsAdminOrYonetici"] = isAdmin || isYonetici;
+
+
+}
+
+@section Styles {
+    @if (isAdmin || isYonetici)
+    {
+        <link rel="stylesheet" href="~/css/kullanici.css" asp-append-version="true" />
+    }
+    else
+    {
+        <link rel="stylesheet" href="~/css/personelpanel.css" asp-append-version="true" />
+    }
+}
+
+
+
+<div id="gorevlerim-root" data-controller="@((isAdmin || isYonetici) ? "AdminPanel" : "PersonelPanel")" class="container mt-4">
+
+    <h3 class="text-uppercase" style="color:#4B49AC;">Görevlerim</h3>
+
+    <ul class="nav nav-tabs" id="gorevlerimTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="aktif-tab" data-bs-toggle="tab" data-bs-target="#aktif" type="button" role="tab">Aktif Görevlerim</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tamamlanan-tab" data-bs-toggle="tab" data-bs-target="#tamamlanan" type="button" role="tab">Tamamlanan Görevlerim</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="iptal-tab" data-bs-toggle="tab" data-bs-target="#iptal" type="button" role="tab">İptal Edilen Görevlerim</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="gorevlerimTabContent">
+        <div class="tab-pane fade show active" id="aktif" role="tabpanel" aria-labelledby="aktif-tab">
+            @await Html.PartialAsync("~/Views/PersonelPanel/_AktifGorevlerim.cshtml", ViewBag.AktifGorevler as List<PersonelTakip.Models.Gorev>)
+
+        </div>
+        <div class="tab-pane fade" id="tamamlanan" role="tabpanel" aria-labelledby="tamamlanan-tab">
+            @await Html.PartialAsync(
+                     "~/Views/PersonelPanel/_TamamlanmisGorevlerim.cshtml",
+                     ViewBag.TamamlanmisGorevler as List<PersonelTakip.Models.Gorev>,
+                     new ViewDataDictionary(ViewData)
+                     )
+        </div>
+        <div class="tab-pane fade" id="iptal" role="tabpanel" aria-labelledby="iptal-tab">
+            @await Html.PartialAsync(
+                     "~/Views/PersonelPanel/_IptalEdilenGorevlerim.cshtml",
+                     ViewBag.IptalEdilenGorevler as List<PersonelTakip.Models.Gorev>,
+                     new ViewDataDictionary(ViewData)
+                     )
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const controllerName = $("#gorevlerim-root").data("controller");
+
+            // Sayfa ilk yüklendiğinde tüm sekmelerin ilk sayfalarını AJAX ile getir
+            $.ajax({
+                url: `/${controllerName}/GetAktifGorevlerim?page=1`,
+                type: 'GET',
+                success: function (html) {
+                    $("#aktif").html(html);
+                }
+            });
+
+            $.ajax({
+                url: `/${controllerName}/GetTamamlanmisGorevlerim?page=1`,
+                type: 'GET',
+                success: function (html) {
+                    $("#tamamlanan").html(html);
+                }
+            });
+
+            $.ajax({
+                url: `/${controllerName}/GetIptalEdilenGorevlerim?page=1`,
+                type: 'GET',
+                success: function (html) {
+                    $("#iptal").html(html);
+                }
+            });
+
+            // Sayfalama
+            $(document).on("click", ".btn-aktifgorev-page", function (e) {
+                e.preventDefault();
+                const page = $(this).data("page");
+                $.get(`/${controllerName}/GetAktifGorevlerim?page=${page}`, function (html) {
+                    $("#aktif").html(html);
+                });
+            });
+
+            $(document).on("click", ".btn-tamamlanan-page", function (e) {
+                e.preventDefault();
+                const page = $(this).data("page");
+                $.get(`/${controllerName}/GetTamamlanmisGorevlerim?page=${page}`, function (html) {
+                    $("#tamamlanan").html(html);
+                });
+            });
+
+            $(document).on("click", ".btn-iptal-page", function (e) {
+                e.preventDefault();
+                const page = $(this).data("page");
+                $.get(`/${controllerName}/GetIptalEdilenGorevlerim?page=${page}`, function (html) {
+                    $("#iptal").html(html);
+                });
+            });
+
+            // Geri Al işlemi (SweetAlert2 ile)
+            $(document).on("submit", ".gorev-geri-al-form", function (e) {
+                e.preventDefault();
+
+                const form = $(this);
+                const url = form.attr("action");
+                const controllerName = $("#gorevlerim-root").data("controller");
+
+                Swal.fire({
+                    title: 'Emin misiniz?',
+                    text: "Bu görevi geri almak üzeresiniz.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Evet, geri al!',
+                    cancelButtonText: 'Vazgeç'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: url,
+                            data: form.serialize(),
+                            headers: {
+                                'RequestVerificationToken': form.find('input[name="__RequestVerificationToken"]').val()
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Başarılı',
+                                        text: response.message || 'Görev geri alındı.',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    });
+
+                                    // Tüm sekmeleri güncelle
+                                    $.get(`/${controllerName}/GetAktifGorevlerim?page=1`, function (html) {
+                                        $("#aktif").html(html);
+                                    });
+                                    $.get(`/${controllerName}/GetTamamlanmisGorevlerim?page=1`, function (html) {
+                                        $("#tamamlanan").html(html);
+                                    });
+                                    $.get(`/${controllerName}/GetIptalEdilenGorevlerim?page=1`, function (html) {
+                                        $("#iptal").html(html);
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'İşlem Başarısız',
+                                        text: response.message || 'Görev geri alınamadı.'
+                                    });
+                                }
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Hata',
+                                    text: 'İşlem sırasında bir hata oluştu.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+
+    <script>
+        //iptal etme işlemii
+        // Görev iptal etme işlemi
+        $(document).on("submit", ".gorev-iptal-form", function (e) {
+            e.preventDefault();
+            const form = $(this);
+            const url = form.attr("action");
+            const controllerName = $("#gorevlerim-root").data("controller");
+
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: "Bu görevi iptal etmek üzeresiniz.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Evet, iptal et!',
+                cancelButtonText: 'Vazgeç'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: form.serialize(),
+                        headers: {
+                            'RequestVerificationToken': form.find('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function () {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'İşlem Başarılı',
+                                text: 'Görev iptal edildi.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            // Görev sekmelerini yeniden yükle
+                            $.get(`/${controllerName}/GetAktifGorevlerim?page=1`, function (html) {
+                                $("#aktif").html(html);
+                            });
+                            $.get(`/${controllerName}/GetIptalEdilenGorevlerim?page=1`, function (html) {
+                                $("#iptal").html(html);
+                            });
+
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'İşlem Başarısız',
+                                text: 'Görev iptal edilemedi.'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+    </script>
+}
+

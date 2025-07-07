@@ -1,0 +1,266 @@
+﻿/* Görev Paneli Sayfası */
+
+
+
+body {
+    background-color: #F0F4F8;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+table{
+    background-color: white;
+}
+
+.table-striped tbody tr:nth-child(odd) {
+    background-color: #f9f9f9; 
+}
+
+.table-striped tbody tr:nth-child(even) {
+    background-color: #ffffff; 
+}
+
+/* Hover efekti */
+.table-hover tbody tr:hover {
+    background-color: #e9ecef; /* Tabloyu hover durumunda daha belirgin hale getirmek için */
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    font-size: 0.95rem;
+    color: #2c3e50;
+}
+
+.table thead th {
+    background-color: #4B49AC; /* Tablo başlıklarının arkaplanı */
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-size: 0.9rem;
+}
+
+.table-responsive {
+    margin-top: 15px;
+}
+
+
+
+
+
+.nav-tabs .nav-link.active {
+    background-color: #4B49AC;
+    color: white;
+}
+
+.nav-tabs .nav-link {
+    color: #4B49AC;
+}
+
+.tab-content {
+    margin-top: 20px;
+}
+
+.gorev-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.btn-danger {
+    background-color: #F3797E; 
+    color: white;
+    border: none;
+}
+
+    .btn-danger:hover {
+        background-color: #E53935;
+        color: white;
+    }
+
+.btn-success {
+    background-color: #7DA0FA; 
+    color: white;
+    border: none;
+}
+
+    .btn-success:hover {
+        background-color: #4B49AC; 
+        color: white;
+        border: none;
+    }
+
+
+
+    .btn-gorev-ekle {
+        background-color: #7DA0FA;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        text-decoration: none;
+    }
+
+    .btn-gorev-ekle:hover {
+        background-color: #4B49AC;
+        color: white;
+    }
+
+.btn btn-primary {
+    background-color: #7DA0FA;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.btn btn-primary:hover {
+    background-color: #4B49AC;
+    color: white;
+}
+
+/* Durum Etiketleri */
+.badge.bg-warning {
+    background-color: #97B2FF !important; 
+    color: white;
+    font-weight: bold;
+}
+
+.badge.bg-danger {
+    background-color: #F3797E !important;
+    color: white;
+    font-weight: bold;
+}
+
+.badge.bg-success {
+    background-color: #7C9A92 !important;
+    color: white;
+    font-weight: bold;
+}
+
+/* Görev Paneli - Modal Tasarımı */
+
+/* Modal Başlığı */
+.modal-header {
+    background-color: #4B49AC;
+    color: white;
+    border-bottom: none;
+    padding: 1rem 1.5rem;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+/* Modal Başlık Yazısı */
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Modal Gövdesi */
+.modal-body {
+    padding: 1.5rem;
+    background-color: #ffffff;
+}
+
+/* Modal Butonları */
+.modal-footer {
+    border-top: none;
+    padding: 1rem 1.5rem;
+    background-color:transparent;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+    /* Modal içindeki Birincil Buton */
+    .modal-footer .btn-primary {
+        background-color: #7DA0FA;
+        border: none;
+        font-weight: 500;
+        padding: 6px 16px;
+        border-radius: 6px;
+    }
+
+        .modal-footer .btn-primary:hover {
+            background-color: #4B49AC;
+            color: white;
+        }
+
+    /* Modal içindeki İkincil Buton */
+    .modal-footer .btn-secondary {
+        border: 1px solid #cccccc;
+        background-color: white;
+        color: #ffff;
+    }
+
+        .modal-footer .btn-secondary:hover {
+            background-color: #f0f0f
+        }
+
+.modal-content {
+    border-radius: 12px; /* Kenarları yumuşatır */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0); /* Hafif gölge verir */
+    border: none; /* Varsa border'ı kaldırır */
+}
+
+.pagination .page-item .page-link {
+    color: #4B49AC;
+    font-weight: bold;
+    padding: 8px 16px;
+    border: 1px solid #dee2e6;
+    margin: 0 2px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #4B49AC;
+    color: #fff;
+    border-color: #4B49AC;
+}
+
+.tooltip.show {
+    opacity: 1;
+}
+
+.tooltip-inner {
+    background-color: #1d3557;
+    color: #fff;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 10px;
+    text-align: left;
+    max-width: 300px;
+}
+
+.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: #1d3557;
+}
+
+.custom-tooltip-trigger:hover {
+    text-decoration: underline dotted;
+}
+
+.tooltip.beautifier .tooltip-inner {
+    background-color: #1d3557;
+    color: white;
+    font-size: 14px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    max-width: 300px;
+    text-align: left;
+}
+
+.tooltip.beautifier.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: #1d3557;
+}
+
+
+
+
+
+

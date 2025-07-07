@@ -1,0 +1,64 @@
+﻿@model PersonelTakip.Models.GorevTalebi
+
+@using PersonelTakip.Models.Enums
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+
+@{
+    var enumList = Enum.GetValues(typeof(TalepTuru)).Cast<TalepTuru>().Select(e => new SelectListItem
+            {
+                Value = ((int)e).ToString(),
+                Text = e.GetType().GetMember(e.ToString())[0]
+                    .GetCustomAttribute<DisplayAttribute>()?.Name ?? e.ToString()
+            }).ToList();
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/personelpanel.css" asp-append-version="true" />
+
+</head>
+
+<form asp-action="YeniGorevTalebi" method="post" id="gorevTalepForm">
+   @Html.AntiForgeryToken()
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label asp-for="BaslangicTarihi" class="form-label">Başlangıç Tarihi</label>
+            <input asp-for="BaslangicTarihi" class="form-control" type="date" />
+        </div>
+        <div class="col-md-6">
+            <label asp-for="BitisTarihi" class="form-label">Bitiş Tarihi</label>
+            <input asp-for="BitisTarihi" class="form-control" type="date" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TalepTuru" class="form-label">Talep Türü</label>
+        <select asp-for="TalepTuru" class="form-control" asp-items="enumList">
+            <option value="">Seçiniz</option>
+        </select>
+    </div>
+
+
+
+    <div class="mb-3">
+        <label asp-for="PlanliMi" class="form-label">Planlı mı?</label>
+        <select asp-for="PlanliMi" class="form-control">
+            <option value="true">Planlanmış</option>
+            <option value="false">Plansız</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TalepEdilenPersonelSayisi" class="form-label">Talep Edilen Personel Sayısı</label>
+        <input asp-for="TalepEdilenPersonelSayisi" class="form-control" type="number" min="1" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Aciklama" class="form-label">Açıklama</label>
+        <textarea asp-for="Aciklama" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div class="text-end">
+        <button type="submit" class="btn-gorev-ekle">Kaydet</button>
+    </div>
+</form>

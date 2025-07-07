@@ -1,0 +1,248 @@
+﻿
+.modal-header.bg-primary {
+    background-color: #4B49AC !important; /* Yeni istediğin renk */
+    color: white;
+}
+
+
+
+.equal-height-card {
+    min-height: 550px; /* Kartın yüksekliği sabitlenir */
+    max-height: 550px;
+    overflow-y: auto; /* İçerik fazlaysa scroll çıksın */
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    background-color: #ffffff;
+}
+
+
+/* Sekmeler */
+.nav-tabs .nav-link {
+    color: #4B49AC;
+    font-weight: 500;
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+    .nav-tabs .nav-link:hover {
+        border-bottom: 2px solid #7DA0FA;
+        color: #7DA0FA;
+    }
+
+    .nav-tabs .nav-link.active {
+        background-color: transparent;
+        border-bottom: 3px solid #4B49AC;
+        color: #4B49AC;
+        font-weight: bold;
+    }
+
+/* Başlıklar */
+h4 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #4B49AC;
+}
+
+/* Detay Modal */
+#detayModal .modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+    border: none;
+}
+
+#detayModal .modal-header {
+    background-color: #4B49AC;
+    color: white;
+    padding: 1rem 1.5rem;
+}
+
+#detayModal .modal-body {
+    background-color: #F8FAFC;
+    padding: 1.5rem;
+}
+
+#detayModal .modal-footer {
+    padding: 1rem 1.5rem;
+    background-color: #F8FAFC;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    border-top: none;
+}
+
+/* Butonlar */
+
+.btn-detay {
+    background-color: #98BDFF; 
+    color: white;
+    border: none;
+    font-weight: 500;
+    border: 2px solid #98BDFF;
+}
+
+    .btn-detay:hover {
+        background-color: transparent;
+        color: #98BDFF;
+        border: 2px solid #98BDFF;
+    }
+
+
+.btn-primary {
+    background-color: #4B49AC;
+    border-color: #4B49AC;
+}
+
+    .btn-primary:hover {
+        background-color: #37348F;
+        border-color: #37348F;
+    }
+
+.btn-danger {
+    background-color: #F3797E;
+    border-color: #F3797E;
+}
+
+    .btn-danger:hover {
+        background-color: #d1575e;
+        border-color: #d1575e;
+    }
+
+.btn-success {
+    background-color: #7DA0FA;
+    border-color: #7DA0FA;
+    color: white;
+}
+
+    .btn-success:hover {
+        background-color: #5b87f1;
+        border-color: #5b87f1;
+    }
+
+/* Form Alanları */
+.form-label {
+    font-weight: 500;
+    color: #333;
+}
+
+.form-control {
+    border-radius: 6px;
+    border-color: #d6d6d6;
+}
+
+/* Detay listesi */
+#modalStep1 dl {
+    background-color: #f9fafb;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 0;
+}
+
+#modalStep1 dt {
+    font-weight: 600;
+    width: 40%;
+    margin: 0;
+}
+
+#modalStep1 dd {
+    width: 60%;
+    margin: 0;
+}
+
+.detay-kutu {
+    background-color: #f8f9fc;
+    padding: 12px;
+    border: 1px solid #7DA0FA;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.detay-baslik {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #4B49AC;
+}
+
+label.form-label {
+    color: #4B49AC;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+select.form-select,
+input.form-control,
+textarea.form-control {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.2s ease-in-out;
+    padding: 6px 10px;
+    font-size: 14px;
+}
+
+    select.form-select:focus,
+    input.form-control:focus,
+    textarea.form-control:focus {
+        border-color: #4B49AC;
+        box-shadow: 0 0 0 0.15rem rgba(75, 73, 172, 0.25);
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+
+.card {
+    overflow-x: auto;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* pagination */
+.custom-pagination .page-item .page-link {
+    background-color: #ffffff;
+    color: #4B49AC;
+    border: 1px solid #d0d0e0;
+    margin: 0 4px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease-in-out, color 0.2s;
+}
+
+    .custom-pagination .page-item .page-link:hover {
+        background-color: #4B49AC;
+        color: #fff;
+        border-color: #4B49AC;
+    }
+
+.custom-pagination .page-item.active .page-link {
+    background-color: transparent;
+    color: #4B49AC;
+    border-color: #4B49AC;
+}
+
+/* Modal içi adımları normal modal boyunda göstermek için */
+.step {
+    min-height: 400px;
+    transition: all 0.3s ease;
+}
+
+/* Step2 modalı step1'in altında görünmesin */
+#modalStep1,
+#modalStep2 {
+    display: none;
+}
+
+    #modalStep1.show,
+    #modalStep2.show {
+        display: block;
+    }
+

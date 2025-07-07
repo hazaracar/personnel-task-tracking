@@ -1,0 +1,70 @@
+﻿@model List<PersonelTakip.Models.GorevTalebi>
+
+@{
+    int aktifSayfa = ViewBag.AktifSayfa ?? 1;
+    int sayfaBoyutu = 5; 
+    int sayac = ((aktifSayfa - 1) * sayfaBoyutu) + 1;
+}
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover mt-3" id="gorevTalepTablosu">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Talep Türü</th>
+                <th>Açıklama</th>
+                <th>Oluşturulma Tarihi</th>
+                <th>Durum</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var talep in Model)
+                {
+                    <tr>
+                        <td>@sayac</td>
+                        <td>@talep.TalepTuru</td>
+                        <td>@talep.Aciklama</td>
+                        <td>@talep.OlusturmaTarihi.ToString("dd.MM.yyyy")</td>
+                        <td>
+                            @if (talep.Durum == "Onay Bekliyor")
+                            {
+                                <span class="badge bg-warning text-dark">Onay Bekliyor</span>
+                            }
+                            else if (talep.Durum == "Onaylandı")
+                            {
+                                <span class="badge bg-success">Onaylandı</span>
+                            }
+                            else if (talep.Durum == "Reddedildi")
+                            {
+                                <span class="badge bg-danger">Reddedildi</span>
+                            }
+                        </td>
+                    </tr>
+                    sayac++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Görev talebi bulunamadı.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (ViewBag.ToplamSayfa > 1)
+{
+    <nav class="mt-3">
+        <ul class="pagination justify-content-center custom-pagination">
+            @for (int i = 1; i <= ViewBag.ToplamSayfa; i++)
+            {
+                <li class="page-item @(i == ViewBag.AktifSayfa ? "active" : "")">
+                    <a class="page-link btn-tum-talep-page" href="#" data-page="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

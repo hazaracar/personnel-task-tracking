@@ -1,0 +1,199 @@
+﻿@model PersonelTakip.Models.KullaniciEkleViewModel
+
+@{
+    ViewData["Title"] = "Profilim";
+    Layout = "~/Views/Shared/_AdminPanelLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <style>
+        .form-section {
+            display: none;
+        }
+
+            .form-section.active {
+                display: block;
+            }
+
+        .form-control[readonly], .form-control:disabled {
+            background-color: #f9f9f9;
+            border: 1px solid #ced4da;
+        }
+    </style>
+}
+
+<!--ADMİN PANEL PROFİLİM SAYFASI-->
+
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="text-center mb-4"><i class="bi bi-person-circle me-2"></i>Profil Bilgilerim</h4>
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+            }
+
+            <form asp-action="Profilim" method="post" id="profilForm">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <ul class="nav nav-tabs mb-3" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#kimlik" type="button" role="tab">Kimlik</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#iletisim" type="button" role="tab">İletişim</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#isbilgisi" type="button" role="tab">İş</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#egitim" type="button" role="tab">Eğitim</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <!-- Kimlik -->
+                    <div class="tab-pane fade show active" id="kimlik" role="tabpanel">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="FirstName">Ad</label>
+                                <input asp-for="FirstName" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="LastName">Soyad</label>
+                                <input asp-for="LastName" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="TcKimlikNo">TC Kimlik No</label>
+                                <input asp-for="TcKimlikNo" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="SicilNo">Sicil No</label>
+                                <input asp-for="SicilNo" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Cinsiyet">Cinsiyet</label>
+                                <select asp-for="Cinsiyet" class="form-control" disabled>
+                                    <option value="Erkek">Erkek</option>
+                                    <option value="Kadın">Kadın</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="DogumTarihi">Doğum Tarihi</label>
+                                <input asp-for="DogumTarihi" type="date" class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- İletişim -->
+                    <div class="tab-pane fade" id="iletisim" role="tabpanel">
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label asp-for="Email">Email</label>
+                                <input asp-for="Email" class="form-control editable" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Telefon">Telefon</label>
+                                <input asp-for="Telefon" class="form-control editable" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="CalismaSehri">Şehir</label>
+                                <select asp-for="CalismaSehri" asp-items="Model.Iller" class="form-control" readonly></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Adres">Adres</label>
+                                <input asp-for="Adres" class="form-control editable" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- İş Bilgileri -->
+                    <div class="tab-pane fade" id="isbilgisi" role="tabpanel">
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label asp-for="KurumId">Kurum</label>
+                                <select asp-for="KurumId" asp-items="Model.Kurumlar" class="form-control" disabled></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="BirimId">Birim</label>
+                                <select asp-for="BirimId" asp-items="Model.Birimler" class="form-control" disabled></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="UnvanId">Ünvan</label>
+                                <select asp-for="UnvanId" asp-items="Model.Unvanlar" class="form-control" disabled></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="CalismaSekliId">Çalışma Şekli</label>
+                                <select asp-for="CalismaSekliId" asp-items="Model.CalismaSekliListesi" class="form-control" disabled></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="IseGirisTarihi">İşe Giriş Tarihi</label>
+                                <input asp-for="IseGirisTarihi" type="date" class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Eğitim -->
+                    <div class="tab-pane fade" id="egitim" role="tabpanel">
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label asp-for="MezuniyetDurumu">Mezuniyet Durumu</label>
+                                <select asp-for="MezuniyetDurumu" asp-items="Model.MezuniyetListesi" class="form-control" disabled></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="MezunOlunanOkul">Mezun Olunan Okul</label>
+                                <input asp-for="MezunOlunanOkul" class="form-control editable" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="MezunBolum">Bölüm</label>
+                                <input asp-for="MezunBolum" class="form-control editable" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-end gap-2">
+                    <button type="button" style="background-color:#4B49AC; color:white;" class="btn" id="editBtn"><i class="bi bi-pencil"></i> Düzenle</button>
+                    <button type="submit" class="btn btn-success d-none" id="saveBtn"><i class="bi bi-check-circle"></i> Kaydet</button>
+                    <button type="button" style="background-color:#F3797E;color:white;" class="btn  d-none" id="cancelBtn"><i class="bi bi-x-circle"></i> İptal</button>
+                </div>
+
+                <input type="hidden" asp-for="KurumId" />
+                <input type="hidden" asp-for="BirimId" />
+                <input type="hidden" asp-for="UnvanId" />
+                <input type="hidden" asp-for="CalismaSehri" />
+                <input type="hidden" asp-for="Role" />
+                <input type="hidden" asp-for="Username" />
+                <input type="hidden" asp-for="Cinsiyet" />
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const editBtn = document.getElementById("editBtn");
+        const saveBtn = document.getElementById("saveBtn");
+        const cancelBtn = document.getElementById("cancelBtn");
+        const editables = document.querySelectorAll(".editable");
+
+        editBtn.addEventListener("click", function () {
+            editables.forEach(input => {
+                input.removeAttribute("readonly");
+                input.removeAttribute("disabled");
+            });
+            editBtn.classList.add("d-none");
+            saveBtn.classList.remove("d-none");
+            cancelBtn.classList.remove("d-none");
+        });
+
+        cancelBtn.addEventListener("click", function () {
+            location.reload();
+        });
+    </script>
+}

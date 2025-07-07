@@ -1,0 +1,286 @@
+﻿@{
+    ViewData["Title"] = "Görev Paneli";
+    Layout = "~/Views/Shared/_AdminPanelLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/gorevpaneli.css" />
+}
+
+<div class="container mt-4">
+    <div class="gorev-header text-uppercase">
+        <h3 style="color:#4B49AC;">Görev Yönetimi</h3>
+    </div>
+
+    <ul class="nav nav-tabs" id="gorevTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="aktif-tab" data-bs-toggle="tab" data-bs-target="#aktif" type="button" role="tab">Aktif Görevler</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="bekleyen-tab" data-bs-toggle="tab" data-bs-target="#bekleyen" type="button" role="tab">Onay Bekleyen</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tamamlanan-tab" data-bs-toggle="tab" data-bs-target="#tamamlanan" type="button" role="tab">Tamamlanmış</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="iptal-tab" data-bs-toggle="tab" data-bs-target="#iptal" type="button" role="tab">İptal Edilenler</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="gorevTabContent">
+        <div class="tab-pane fade show active" id="aktif"></div>
+        <div class="tab-pane fade" id="bekleyen"></div>
+        <div class="tab-pane fade" id="tamamlanan"></div>
+        <div class="tab-pane fade" id="iptal"></div>
+
+    </div>
+</div>
+
+<!-- Görev Yeniden Atama Modalı -->
+<div class="modal fade" id="yenidenAtaModal" tabindex="-1" aria-labelledby="yenidenAtaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="yenidenAtaModalContent">
+            <!-- Form AJAX ile yüklenecek -->
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script>
+        // Aktif Görevler – Sayfa geçişi
+        $(document).on("click", ".btn-aktif-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+
+            $.ajax({
+                url: '/AdminPanel/GetAktifGorevler?page=' + page,
+                type: 'GET',
+                success: function (html) {
+                    $("#aktif").html(html); 
+                },
+                error: function () {
+                    alert("Görevler yüklenemedi.");
+                }
+            });
+        });
+
+        // Sayfa ilk yüklendiğinde aktif görevlerin ilk sayfasını çek
+        $(document).ready(function () {
+            $.ajax({
+                url: '/AdminPanel/GetAktifGorevler?page=1',
+                type: 'GET',
+                success: function (html) {
+                    $("#aktif").html(html);
+                }
+            });
+        });
+
+        // Sayfa ilk yüklendiğinde Onay Bekleyen Görevlerin ilk sayfasını da çek
+        $.ajax({
+            url: '/AdminPanel/GetOnayBekleyenGorevler?page=1',
+            type: 'GET',
+            success: function (html) {
+                $("#bekleyen").html(html); // onay bekleyen sekmesini ilk açılışta doldur
+            }
+        });
+
+        // Sayfa ilk yüklendiğinde Tamamlanmış Görevler sekmesi için veri çek
+        $(document).ready(function () {
+            $.ajax({
+                url: '/AdminPanel/GetTamamlanmisGorevler?page=1',
+                type: 'GET',
+                success: function (html) {
+                    $("#tamamlanan").html(html);
+                }
+            });
+        });
+
+        // Sayfa ilk yüklendiğinde Iptal Edilmis Görevler sekmesi için veri çek
+
+        $(document).ready(function () {
+            $.ajax({
+                url: '/AdminPanel/GetIptalEdilenGorevler?page=1',
+                type: 'GET',
+                success: function (html) {
+                    $("#iptal").html(html); 
+                }
+            });
+        });
+
+
+
+    </script>
+
+    <script>
+        // İptal Edilen Görevler – Sayfa geçişi
+        $(document).on("click", ".btn-iptal-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+
+            $.ajax({
+                url: '/AdminPanel/GetIptalEdilenGorevler?page=' + page,
+                type: 'GET',
+                success: function (html) {
+                    $("#iptal").html(html); 
+                },
+                error: function () {
+                    alert("Görevler yüklenemedi.");
+                }
+            });
+        });
+
+    </script>
+
+    <script>
+        // Onay Bekleyen Görevler – Sayfa geçişi
+        $(document).on("click", ".btn-onay-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+
+            $.ajax({
+                url: '/AdminPanel/GetOnayBekleyenGorevler?page=' + page,
+                type: 'GET',
+                success: function (html) {
+                    $("#bekleyen").html(html); 
+                },
+                error: function () {
+                    alert("Görevler yüklenemedi.");
+                }
+            });
+        });
+
+    </script>
+
+    <script>
+        // Tamamlanmış Görevler – Sayfa geçişi
+        $(document).on("click", ".btn-tamamlanan-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+
+            $.ajax({
+                url: '/AdminPanel/GetTamamlanmisGorevler?page=' + page,
+                type: 'GET',
+                success: function (html) {
+                    $("#tamamlanan").html(html); // sadece bu sekme güncellenir
+                },
+                error: function () {
+                    alert("Görevler yüklenemedi.");
+                }
+            });
+        });
+
+    </script>
+
+
+
+    <script>
+        // Yeniden Ata butonuna tıklanınca formu yükle
+        $(document).on("click", ".btn-yeniden-ata", function () {
+            var gorevId = $(this).data("gorev-id");
+
+            $.ajax({
+                url: '/AdminPanel/GetGorevYenidenAtamaForm?id=' + gorevId,
+                type: 'GET',
+                success: function (html) {
+                    $("#yenidenAtaModalContent").html(html);
+                    $("#yenidenAtaModal").modal("show");
+                },
+                error: function () {
+                    alert("Görev bilgileri yüklenemedi.");
+                }
+            });
+        });
+
+        // Yeniden Ata formu submit
+        $(document).on("submit", "#gorevYenidenAtamaForm", function (e) {
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: "POST",
+                url: "/AdminPanel/YenidenAta",
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            toast: true,
+                            position: "top-end",
+                            icon: "success",
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 2500,
+                            timerProgressBar: true
+                        });
+
+                        $("#yenidenAtaModal").modal("hide");
+
+                        // Küçük bir gecikmeyle yenile (animasyon tamamlanınca)
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "İşlem başarısız",
+                            text: "Görev yeniden atanamadı.",
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Sunucu hatası",
+                        text: "İşlem sırasında bir hata oluştu.",
+                    });
+                }
+
+            });
+        });
+    </script>
+    <script>
+        // SweetAlert ile Silme Onayı (TÜM SAYFA İÇİN)
+        $(document).on("click", ".btn-gorev-sil", function (e) {
+            e.preventDefault(); // Formun hemen submit olmasını engeller
+            const form = $(this).closest("form");
+
+            Swal.fire({
+                title: "Emin misiniz?",
+                text: "Bu görevi silmek üzeresiniz!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Evet, sil",
+                cancelButtonText: "Vazgeç"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
+    </script>
+    <script>
+        $(document).on("click", ".btn-gorev-onayla", function (e) {
+            e.preventDefault();
+            const form = $(this).closest("form");
+
+            Swal.fire({
+                title: "Görevi onaylamak istiyor musunuz?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Evet, onayla",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
+    </script>
+}

@@ -1,0 +1,146 @@
+﻿/* Genel arka plan ve font ayarları */
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #F0F4F8, #DCE5F2);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navbar rengi */
+.navbar {
+    background-color: #F0F4F8 !important;
+}
+
+/* Sayfa içeriği boşluk */
+#login {
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+/* Login kartı (form kutusu) */
+.login-card {
+    min-height: 400px;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    padding: 40px;
+    
+}
+
+    .login-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    /* Başlık */
+    .login-card h3 {
+        text-align: center;
+        font-size: 26px;
+        color: #4B49AC;
+        margin-bottom: 30px;
+    }
+
+/* Form içeriği */
+.login-form {
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+    /* Input kutuları */
+    .login-form .form-control {
+        margin-bottom: 20px;
+        width: 100%;
+        border-radius: 8px;
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+        border: 1px solid #7DA0FA;
+        transition: 0.2s ease-in-out;
+    }
+
+.form-control:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(125, 160, 250, 0.3);
+}
+
+.form-control:hover {
+    box-shadow: 0 0 0 0.15rem rgba(125, 160, 250, 0.3);
+}
+
+/* Giriş butonu */
+.login-form button {
+    font-weight: 600;
+    background-color: #4B49AC;
+    border: none;
+    color: white;
+    padding: 12px 28px;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+    .login-form button:hover {
+        background-color: #ffffff;
+        color: #4B49AC;
+        border: 2px solid #4B49AC;
+    }
+
+/* "Şifremi unuttum" linki */
+.text-info {
+    font-size: 14px;
+    color: #7DA0FA;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+    .text-info:hover {
+        color: #2C3E50;
+        text-decoration: underline;
+    }
+
+/* Giriş formunun altındaki düzen */
+.login-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+}
+
+/* Hata mesajı */
+p.error-message {
+    margin-bottom: 0;
+    color: #F3797E;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Input spacing */
+.custom-input-spacing {
+    margin-bottom: 20px;
+}
+
+.btn-guncelle {
+    background-color: #4B49AC;
+    color: white;
+    border: 2px solid #4B49AC;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out
+}
+
+    .btn-guncelle:hover {
+        background-color: transparent;
+        color: #4B49AC;
+    }
+
+.bg-reset {
+    background-color: #4B49AC;
+}
+
+
+

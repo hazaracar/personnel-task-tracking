@@ -1,0 +1,106 @@
+﻿@model List<PersonelTakip.Models.Gorev>
+
+@{
+    int aktifSayfa = ViewBag.AktifSayfa ?? 1;
+    int sayfaBoyutu = 5;
+    int sayac = ((aktifSayfa - 1) * sayfaBoyutu) + 1;
+    var isAdminOrYonetici = ViewData["IsAdminOrYonetici"] as bool? ?? false;
+
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info mt-3">
+        Tamamladığınız görev bulunmamaktadır.
+    </div>
+}
+else
+{
+    <div class="table-responsive mt-3">
+        <table class="table table-hover table-bordered align-middle">
+            
+                    <thead class="table-primary text-center">
+                        <tr>
+                            <th>#</th>
+                            <th>Görev Adı</th>
+                            <th>Şehir</th>
+                            <th>Kurum</th>
+                            <th>Başlangıç</th>
+                            <th>Bitiş</th>
+                            <th>Ulaşım</th>
+                            <th>Konaklama</th>
+                            <th>Yönetici Açıklaması</th>
+                            <th>İşlem</th>
+                            <th>Detay</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var gorev in Model)
+                        {
+                            <tr class="text-center">
+                                <td>@sayac</td>
+                                <td>@gorev.GorevAdi</td>
+                                <td>@gorev.Sehir</td>
+                                <td>@gorev.Kurum</td>
+                                <td>
+                                    @gorev.BaslangicTarihi.ToString("dd.MM.yyyy")
+                                    @if (gorev.BaslangicSaati.HasValue)
+                                    {
+                                        <span> @gorev.BaslangicSaati.Value.ToString(@"hh\:mm")</span>
+                                    }
+                                </td>
+                                <td>
+                                    @gorev.BitisTarihi.ToString("dd.MM.yyyy")
+                                    @if (gorev.BitisSaati.HasValue)
+                                    {
+                                        <span> @gorev.BitisSaati.Value.ToString(@"hh\:mm")</span>
+                                    }
+                                </td>
+
+                                <td>@gorev.UlasimTuru</td>
+                                <td>@gorev.KonaklamaTuru</td>
+                                <td>@gorev.YoneticiAciklama</td>
+                                <td>
+                                    @{
+                                        var controllerName = ViewContext.RouteData.Values["controller"]?.ToString();
+                                    }
+                                    <form class="gorev-geri-al-form" method="post" action="/@controllerName/GorevGeriAl">
+
+                                        @Html.AntiForgeryToken()
+                                                <input type="hidden" name="gorevId" value="@gorev.Id" />
+                                                <button type="submit" class="btn btn-gerial btn-sm">Geri Al</button>
+                                    </form>
+
+                                </td>
+                                <td>
+                                    @{
+                                        var controller = isAdminOrYonetici ? "AdminPanel" : "PersonelPanel";
+                                    }
+                                    <a href="/@controller/GorevDetayPdf/@gorev.Id" target="_blank" class="btn btn-sm btn-pdf">
+                                        <i class="fa fa-file-pdf-o"></i> PDF
+                                    </a>
+                                </td>
+
+                            </tr>
+                            sayac++;
+                        }
+                    </tbody>
+                </table>
+    </div>
+
+    @if (ViewBag.ToplamSayfa > 1)
+    {
+        <nav class="mt-3">
+            <ul class="pagination justify-content-center custom-pagination">
+                @for (int i = 1; i <= ViewBag.ToplamSayfa; i++)
+                {
+                    <li class="page-item @(i == ViewBag.AktifSayfa ? "active" : "")">
+                        <a href="#" class="page-link btn-tamamlanan-page" data-page="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+}

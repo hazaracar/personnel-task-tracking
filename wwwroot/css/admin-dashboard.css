@@ -1,0 +1,174 @@
+﻿/* admin-dashboard.css */
+
+.duyuru-item {
+    background-color: #f9fafe;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+    .duyuru-item:hover {
+        background-color: #f0f4ff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+
+.card-title {
+    font-size: 1.25rem;
+    color: #4B49AC;
+    font-weight: bold;
+}
+
+
+#notificationList {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1050; /* Bootstrap modallarla çakışmasın */
+    min-width: 200px;
+    display: none;
+}
+
+    #notificationList.show {
+        display: block;
+    }
+
+
+.card {
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    height: 350px; /* sabit yükseklik */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-title {
+    color: #4B49AC;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.bg-durum {
+    background-color: #7978E9;
+}
+
+
+
+
+
+.card-text {
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+.shortcut-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s ease;
+    padding: 10px;
+}
+
+    .shortcut-btn small {
+        font-size: 13px;
+        margin-top: 4px;
+    }
+
+.btn-kullanici {
+    background-color: #4B49AC;
+}
+
+    .btn-kullanici:hover {
+        background-color: #3e3b94;
+    }
+
+.btn-gorev {
+    background-color: #54ceb8;
+}
+
+    .btn-gorev:hover {
+        background-color: #40b6a2;
+    }
+
+.btn-talep {
+    background-color: #7DA0FA;
+}
+
+    .btn-talep:hover {
+        background-color: #6389e9;
+    }
+
+.btn-tanim {
+    background-color: #F3797E;
+}
+
+    .btn-tanim:hover {
+        background-color: #e16368;
+    }
+
+.btn-profil {
+    background-color: #4B49AC;
+}
+
+    .btn-profil:hover {
+        background-color: #3e3b94;
+    }
+
+.btn-rapor {
+    background-color: #F3797E;
+}
+
+    .btn-rapor:hover {
+        background-color: #e16368;
+    }
+
+
+.crd-gorev {
+    background: linear-gradient(135deg, #F0F4F8, #DCE5F2);
+    border-radius: 12px;
+    height: 230px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin: auto;
+    width: 100%;
+    max-width: 260px;
+    transition: all 0.3s ease;
+}
+
+    .crd-gorev:hover {
+        background: linear-gradient(150deg, #DCE5F2, #F3FAFF);
+    }
+
+.custom-carousel-icon {
+    font-size: 28px;
+    color: #6C63FF;
+    background-color: transparent; 
+    border-radius: 50%;
+    padding: 8px 12px;
+    display: inline-block;
+    transition: color 0.3s ease;
+    user-select: none;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    opacity: 1;
+    width: auto;
+}
+
+.custom-carousel-icon:hover {
+    color: #4B49AC; 
+    cursor: pointer;
+}
+

@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "Tanımlar";
+    Layout = "~/Views/Shared/_AdminPanelLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tanimlar.css" asp-append-version="true" />
+}
+
+<h3 class="mb-4" style="color:#4B49AC;">Tanım Yönetimi</h3>
+
+<div class="row g-4">
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card card-kurum shadow-sm border-0 h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-building fa-2x mb-3"></i>
+                <h5 class="card-title">Kurum Tanımları</h5>
+                <p class="card-text text-muted">Kurum ekleyin, düzenleyin veya kaldırın.</p>
+                <a href="/AdminPanel/KurumListesi" class="btn btn-kurum">Yönet</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card shadow-sm border-0 h-100 card-birim">
+            <div class="card-body text-center">
+                <i class="fas fa-layer-group fa-2x mb-3"></i>
+                <h5 class="card-title">Birim Tanımları</h5>
+                <p class="card-text text-muted">Birimleri tanımlayın ve yönetin.</p>
+                <a href="/AdminPanel/BirimListesi" class="btn btn-birim">Yönet</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card shadow-sm border-0 h-100 card-unvan">
+            <div class="card-body text-center">
+                <i class="fas fa-id-badge fa-2x mb-3"></i>
+                <h5 class="card-title">Unvan Tanımları</h5>
+                <p class="card-text text-muted">Personel unvanlarını yönetin.</p>
+                <a href="/AdminPanel/UnvanListesi" class="btn btn-unvan">Yönet</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card shadow-sm border-0 h-100 card-rol">
+            <div class="card-body text-center">
+                <i class="fas fa-user-tag fa-2x mb-3"></i>
+                <h5 class="card-title">Rol Tanımları</h5>
+                <p class="card-text text-muted">Yetkileri tanımlayın ve yönetin.</p>
+                <a href="/AdminPanel/RolListesi" class="btn btn-rol">Yönet</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="card shadow-sm border-0 h-100 card-yetkilendirme">
+            <div class="card-body text-center">
+                <i class="fas fa-key fa-2x mb-3"></i>
+                <h5 class="card-title">Yetkilendirme Yönetimi</h5>
+                <p class="card-text text-muted">Rollere özel yetkileri tanımlayın ve yönetin.</p>
+                <a href="/AdminPanel/Yetkilendirme" class="btn btn-yetkilendirme">Yönet</a>
+            </div>
+        </div>
+    </div>
+
+
+</div>

@@ -1,0 +1,150 @@
+﻿@model PersonelTakip.Models.GorevAtamaViewModel
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+}
+
+
+<form id="gorevAtamaForm" asp-controller="AdminPanel" asp-action="GorevAta" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="TalepId" />
+    <input type="hidden" asp-for="TalepAciklama" />
+
+    <div class="row g-3">
+        <div class="col-md-12">
+            <label class="form-label fw-semibold">Görevlendirilecek Personeller</label>
+            <select asp-for="SecilenPersonelIdleri" class="form-select" id="SecilenPersonelIdleri" multiple>
+                @foreach (var personel in Model.PersonelListesi)
+                {
+                    <option value="@personel.Value">@personel.Text</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Destek Talep Eden İl</label>
+            <select asp-for="SecilenIl" class="form-select">
+                <option value="">Seçiniz</option>
+                @foreach (var il in Model.Iller)
+                {
+                    <option value="@il.Value">@il.Text</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Kurum</label>
+            <input asp-for="Kurum" class="form-control" readonly />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Başlangıç Tarihi</label>
+            <input asp-for="BaslangicTarihi" class="form-control" type="date" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Başlangıç Saati</label>
+            <input asp-for="BaslangicSaati" class="form-control" type="time" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Bitiş Tarihi</label>
+            <input asp-for="BitisTarihi" class="form-control" type="date" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Bitiş Saati</label>
+            <input asp-for="BitisSaati" class="form-control" type="time" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Konaklama Türü</label>
+            <select asp-for="KonaklamaTuru" class="form-select">
+                <option>Otel</option>
+                <option>Pansiyon</option>
+                <option>Kiralık Daire</option>
+                <option>Kendi Evi</option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Ulaşım Türü</label>
+            <select asp-for="UlasimTuru" class="form-select" id="ulasimSelect">
+                <option>Kiralık Araç</option>
+                <option>Otobüs</option>
+                <option>Uçak</option>
+                <option>Kendi Aracı</option>
+            </select>
+        </div>
+
+        <div class="col-md-6" id="plakaInput" style="display:none;">
+            <label class="form-label fw-semibold">Plaka</label>
+            <input asp-for="Plaka" class="form-control" />
+            <span asp-validation-for="Plaka" class="text-danger"></span>
+
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Harcama Türü</label>
+            <select asp-for="HarcamaTuru" class="form-select">
+                <option>Avans Verilecek</option>
+                <option>Avans Verilemeyecek</option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Harcama Tutarı (₺)</label>
+            <input asp-for="HarcamaTutari" class="form-control" type="number" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Yemek Bedeli</label>
+            <select asp-for="YemekBedeliTuru" class="form-select">
+                <option>Nakit</option>
+                <option>Yemek Kartı</option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Yemek Tutarı (₺)</label>
+            <input asp-for="YemekTutari" class="form-control" type="number" />
+        </div>
+
+        <div class="col-12">
+            <label class="form-label fw-semibold">Yönetici Açıklaması</label>
+            <textarea asp-for="YoneticiAciklama" class="form-control" rows="3"></textarea>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-4">
+        <button type="submit" class="btn btn-primary me-2">Görevi Ata</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).on("change", "#ulasimSelect", function () {
+            const selected = $(this).val();
+            if (selected === "Kiralık Araç" || selected === "Kendi Aracı") {
+                $("#plakaInput").show();
+            } else {
+                $("#plakaInput").hide();
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $('#detayModal').on('shown.bs.modal', function () {
+            $('#SecilenPersonelIdleri').select2({
+                placeholder: "Personel seçin",
+                width: '100%',
+                allowClear: true,
+                dropdownParent: $('#modalStep2')
+            });
+        });
+
+
+    </script>
+}

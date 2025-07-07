@@ -1,0 +1,47 @@
+﻿@model PersonelTakip.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+}
+
+<div id="login">
+    <div class="login-card">
+        <h3 class="text-center mb-4">Personel Görev Takip Sistemi</h3>
+
+        @if (!ViewData.ModelState.IsValid)
+      
+         {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p class="error-message">@error.ErrorMessage</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                }
+            </div>     
+         }
+
+        <form asp-action="Login" method="post" class="login-form">
+            <div class="mb-3 custom-input-spacing">
+                
+                <input asp-for="Username" class="form-control" size="40" placeholder="Kullanıcı Adı" />
+                <span asp-validation-for="Username" class="text-danger"></span><br>
+            </div>
+
+            <div class="mb-4 custom-input-spacing" >
+                
+                <input asp-for="Password" type="password" class="form-control" size="40" placeholder="Şifre" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="login-footer">
+                <button type="submit" class="btn btn-info">Giriş Yap</button>
+                <a asp-action="ForgotPassword" asp-controller="LoginInfo" class="text-info align-self-center">Şifreni mi unuttun?</a>
+            </div>
+        </form>
+    </div>
+</div>

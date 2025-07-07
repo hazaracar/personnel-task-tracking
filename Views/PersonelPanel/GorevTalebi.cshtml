@@ -1,0 +1,271 @@
+﻿@{
+    ViewData["Title"] = "Görev Talebi";
+    Layout = "~/Views/Shared/_PersonelLayout.cshtml";
+}
+<head>
+    <link rel="stylesheet" href="~/css/personelpanel.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+</head>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button type="button" class="btn-gorev-ekle" data-bs-toggle="modal" data-bs-target="#gorevTalepModal">
+            + Yeni Kayıt
+        </button>
+
+
+        <div class="search-container">
+            <input type="text" class="search-input" id="gorevArama" placeholder="Arama..." />
+                <i class="fa fa-search search-icon"></i>
+            
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-3" id="talepTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tum" role="tab">Tümü</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#onayBekliyor" role="tab">Onay Bekliyor</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#onaylandi" role="tab">Onaylandı</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#reddedildi" role="tab">Reddedildi</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="talepTabContent">
+        <div class="tab-pane fade show active" id="tum" role="tabpanel"></div>
+        <div class="tab-pane fade" id="onayBekliyor" role="tabpanel"></div>
+        <div class="tab-pane fade" id="onaylandi" role="tabpanel"></div>
+        <div class="tab-pane fade" id="reddedildi" role="tabpanel"></div>
+
+    </div>
+
+</div>
+<!-- Modal -->
+<div class="modal fade" id="gorevTalepModal" tabindex="-1" aria-labelledby="gorevTalepModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="gorevTalepModalLabel">Yeni Görev Talebi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                @await Html.PartialAsync("_YeniGorevTalebiPartial", new PersonelTakip.Models.GorevTalebi
+           {
+               BaslangicTarihi = DateTime.Today,
+               BitisTarihi = DateTime.Today
+           })
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <script>
+        $(document).ready(function () {
+            $('#gorevTalepForm').submit(function (e) {
+                e.preventDefault(); // sayfanın reload olmasını engelledim
+                $.ajax({
+                    url: '/GorevTalebi/YeniGorevTalebi', 
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Başarılı!',
+                                text: response.message,
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            $("#gorevTalepModal").modal('hide');
+                            setTimeout(() => location.reload(), 2000);
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata!',
+                                text: 'Kayıt sırasında bir hata oluştu.'
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata!',
+                            text: xhr.responseText || 'Bir hata oluştu.'
+                        });
+                    }
+
+                });
+            });
+        });
+    </script>
+
+
+
+    <script>
+        document.getElementById("gorevArama").addEventListener("keyup", function () {
+            var arama = this.value.toLowerCase();
+            var satirlar = document.querySelectorAll("#gorevTalepTablosu tbody tr");
+
+            satirlar.forEach(function (satir) {
+                var metin = satir.textContent.toLowerCase();
+                satir.style.display = metin.includes(arama) ? "" : "none";
+            });
+        });
+    </script>
+
+    <script>
+        // "Tüm Talepler" sekmesi için sayfa geçişi
+        $(document).on("click", ".btn-tum-talep-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+
+            $.ajax({
+                url: '/PersonelPanel/GetTumGorevTalepleri?page=' + page,
+                type: 'GET',
+                success: function (html) {
+                    $("#tum").html(html); // sadece "Tümü" sekmesini günceller
+                },
+                error: function () {
+                    alert("Talepler yüklenemedi.");
+                }
+            });
+        });
+
+        // Sayfa ilk yüklendiğinde ilk sayfayı çek (isteğe bağlı)
+        $(document).ready(function () {
+            $.ajax({
+                url: '/PersonelPanel/GetTumGorevTalepleri?page=1',
+                type: 'GET',
+                success: function (html) {
+                    $("#tum").html(html);
+                }
+            });
+        });
+    </script>
+
+    <script>
+        // Onay Bekleyen Talepler – Sayfa geçişi
+        $(document).on("click", ".btn-onaybekleyen-talep-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+
+            $.ajax({
+                url: '/PersonelPanel/GetOnayBekleyenTalepler?page=' + page,
+                type: 'GET',
+                success: function (html) {
+                    $("#onayBekliyor").html(html);
+                },
+                error: function () {
+                    alert("Onay bekleyen talepler yüklenemedi.");
+                }
+            });
+        });
+
+        // Sekmeye ilk tıklamada veri yükle
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var targetId = $(e.target).attr('href'); // Örn: #onayBekliyor
+
+            if (targetId === "#onayBekliyor" && !$(targetId).data("loaded")) {
+                $.ajax({
+                    url: '/PersonelPanel/GetOnayBekleyenTalepler?page=1',
+                    type: 'GET',
+                    success: function (html) {
+                        $(targetId).html(html);
+                        $(targetId).data("loaded", true); // tekrar yüklememesi için
+                    }
+                });
+            }
+        });
+
+    </script>
+
+    <script>
+        // Onaylanan Talepler – Sayfa geçişi
+        $(document).on("click", ".btn-onaylanan-talep-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+
+            $.ajax({
+                url: '/PersonelPanel/GetOnaylananTalepler?page=' + page,
+                type: 'GET',
+                success: function (html) {
+                    $("#onaylandi").html(html);
+                },
+                error: function () {
+                    alert("Onaylanan talepler yüklenemedi.");
+                }
+            });
+        });
+
+        // Sekmeye ilk tıklamada veri yükle
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var targetId = $(e.target).attr('href');
+
+            if (targetId === "#onaylandi" && !$(targetId).data("loaded")) {
+                $.ajax({
+                    url: '/PersonelPanel/GetOnaylananTalepler?page=1',
+                    type: 'GET',
+                    success: function (html) {
+                        $(targetId).html(html);
+                        $(targetId).data("loaded", true);
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script>
+        // Reddedilen Talepler – Sayfa geçişi
+        $(document).on("click", ".btn-reddedilen-talep-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+
+            $.ajax({
+                url: '/PersonelPanel/GetReddedilenTalepler?page=' + page,
+                type: 'GET',
+                success: function (html) {
+                    $("#reddedildi").html(html);
+                },
+                error: function () {
+                    alert("Reddedilen talepler yüklenemedi.");
+                }
+            });
+        });
+
+        // Sekmeye ilk tıklamada veri yükle
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var targetId = $(e.target).attr('href');
+
+            if (targetId === "#reddedildi" && !$(targetId).data("loaded")) {
+                $.ajax({
+                    url: '/PersonelPanel/GetReddedilenTalepler?page=1',
+                    type: 'GET',
+                    success: function (html) {
+                        $(targetId).html(html);
+                        $(targetId).data("loaded", true);
+                    }
+                });
+            }
+        });
+
+
+    </script>
+
+
+
+
+}
+
+
+
